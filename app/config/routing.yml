@@ -1,0 +1,3 @@
+solustat_time_sheet:
+    resource: "@SolustatTimeSheetBundle/Resources/config/routing.yml"
+    prefix:   /

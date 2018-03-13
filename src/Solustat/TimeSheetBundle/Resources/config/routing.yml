@@ -1,0 +1,75 @@
+solustat_time_sheet_homepage:
+    path:     /platform
+    defaults: { _controller: SolustatTimeSheetBundle:Default:index }
+
+solustat_time_sheet_patient_list:
+    path:      /platform/patient/list
+    defaults: { _controller: SolustatTimeSheetBundle:Patient:list }
+
+solustat_time_sheet_patient_view:
+    path:      /platform/patient/{id}
+    defaults: { _controller: SolustatTimeSheetBundle:Patient:view }
+    requirements:
+        id: \d+
+
+solustat_time_sheet_patient_add:
+    path:      /platform/patient/add
+    defaults: { _controller: SolustatTimeSheetBundle:Patient:add }
+
+solustat_time_sheet_patient_edit:
+    path:      /platform/patient/edit/{id}
+    defaults: { _controller: SolustatTimeSheetBundle:Patient:edit }
+    requirements:
+        id: \d+
+
+solustat_time_sheet_patient_delete:
+    path:      /platform/patient/delete/{id}
+    defaults: { _controller: SolustatTimeSheetBundle:Patient:delete }
+    requirements:
+        id: \d+
+
+solustat_time_sheet_nurse_list:
+    path:      /platform/nurse/list
+    defaults: { _controller: SolustatTimeSheetBundle:Nurse:list }
+
+solustat_time_sheet_nurse_view:
+    path:      /platform/nurse/{id}
+    defaults: { _controller: SolustatTimeSheetBundle:Nurse:view }
+    requirements:
+        id: \d+
+
+solustat_time_sheet_nurse_add:
+    path:      /platform/nurse/add
+    defaults: { _controller: SolustatTimeSheetBundle:Nurse:add }
+
+solustat_time_sheet_nurse_edit:
+    path:      /platform/nurse/edit/{id}
+    defaults: { _controller: SolustatTimeSheetBundle:Nurse:edit }
+    requirements:
+        id: \d+
+
+solustat_time_sheet_nurse_delete:
+    path:      /platform/nurse/delete/{id}
+    defaults: { _controller: SolustatTimeSheetBundle:Nurse:delete }
+    requirements:
+        id: \d+
+
+solustat_time_sheet_bucket_list:
+    path:      /platform/bucket/list
+    defaults: { _controller: SolustatTimeSheetBundle:Bucket:list }
+
+solustat_time_sheet_nurse_day:
+    path:      /platform/nurse/week
+    defaults: { _controller: SolustatTimeSheetBundle:Nurse:day }
+
+solustat_time_sheet_nurse_week:
+    path:      /platform/nurse/week
+    defaults: { _controller: SolustatTimeSheetBundle:Nurse:week }
+
+solustat_time_sheet_nurse_month:
+    path:      /platform/nurse/month
+    defaults: { _controller: SolustatTimeSheetBundle:Nurse:month }
+
+solustat_time_sheet_nurse_year:
+    path:      /platform/nurse/year
+    defaults: { _controller: SolustatTimeSheetBundle:Nurse:year }
