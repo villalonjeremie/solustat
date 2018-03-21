@@ -28,6 +28,10 @@ solustat_time_sheet_patient_delete:
     requirements:
         id: \d+
 
+solustat_time_sheet_nurse_myaccount:
+    path:     /platform/account
+    defaults: { _controller: SolustatTimeSheetBundle:Nurse:myaccount }
+
 solustat_time_sheet_nurse_list:
     path:      /platform/nurse/list
     defaults: { _controller: SolustatTimeSheetBundle:Nurse:list }
