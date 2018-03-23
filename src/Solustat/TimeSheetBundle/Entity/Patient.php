@@ -25,11 +25,6 @@ class Patient
     private $folderNumber;
 
     /**
-     * @ORM\Column(name="date", type="datetime")
-     */
-    private $date;
-
-    /**
      * @ORM\Column(name="name", type="string", length=255)
      */
     private $name;
@@ -84,7 +79,12 @@ class Patient
     private $frequency;
 
     /**
-     * @ORM\Column(name="updated_at", type="datetime", nullable=true)
+     * @ORM\Column(name="created_at", type="datetime", nullable=true)
+     */
+    private $createdAt;
+
+    /**
+     * @ORM\Column(name="updated_at", type="datetime", nullable=false)
      */
     private $updatedAt;
 
@@ -97,11 +97,18 @@ class Patient
     /**
      * @ORM\PreUpdate
      */
+    public function createDate()
+    {
+        $this->setCreatedAt(new \Datetime());
+    }
+
+    /**
+     * @ORM\PreUpdate
+     */
     public function updateDate()
     {
         $this->setUpdatedAt(new \Datetime());
     }
-
 
     /**
      * Get id
@@ -423,5 +430,29 @@ class Patient
     public function getFrequency()
     {
         return $this->frequency;
+    }
+
+    /**
+     * Set createdAt
+     *
+     * @param \DateTime $createdAt
+     *
+     * @return Patient
+     */
+    public function setCreatedAt($createdAt)
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    /**
+     * Get createdAt
+     *
+     * @return \DateTime
+     */
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
     }
 }

@@ -2,7 +2,6 @@
 
 namespace Solustat\TimeSheetBundle\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -28,6 +27,12 @@ class TypeCare
      * @ORM\Column(name="color", type="string", length=255)
      */
     private $color;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Solustat\TimeSheetBundle\Entity\Patient",mappedBy="typeCare")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $patients;
 
     /**
      * Get id

@@ -2,6 +2,8 @@
 
 namespace Solustat\TimeSheetBundle\Repository;
 
+use Doctrine\ORM\Tools\Pagination\Paginator;
+
 /**
  * PatientRepository
  *
@@ -10,4 +12,11 @@ namespace Solustat\TimeSheetBundle\Repository;
  */
 class PatientRepository extends \Doctrine\ORM\EntityRepository
 {
+    public function getPatients($page, $nbPerPage)
+    {
+        $query = $this->createQueryBuilder('p')->getQuery();
+        $query->setFirstResult(($page-1) * $nbPerPage)->setMaxResults($nbPerPage);
+
+        return new Paginator($query, true);
+    }
 }

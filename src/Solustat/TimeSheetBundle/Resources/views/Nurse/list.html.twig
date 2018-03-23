@@ -2,19 +2,19 @@
 {% extends "SolustatTimeSheetBundle::layout.html.twig" %}
 
 {% block title %}
-    Liste des patients - {{ parent() }}
+    Liste du personnel - {{ parent() }}
 {% endblock %}
 
 {% block solustattimesheet_body %}
-    <h2>Liste des patients</h2>
+    <h2>Liste du personnel</h2>
 
     <ul>
-        {% for patient in listPatients %}
+        {% for nurse in listNurses %}
             <li>
-                <a href="{{ path('solustat_time_sheet_patient_view', {'id': patient.id}) }}">
-                    {{ patient.name }}
+                <a href="{{ path('solustat_time_sheet_nurse_view', {'id': nurse.id}) }}">
+                    {{ nurse.name }}
                 </a>
-                créé le {{ patient.createdAt|date('d/m/Y') }}
+                créé le {{ nurse.createdAt|date('d/m/Y') }}
             </li>
         {% else %}
             <li>Pas (encore !) d'annonces</li>
@@ -24,7 +24,7 @@
     <ul class="pagination">
         {% for p in range(1, nbPages) %}
             <li{% if p == page %} class="active"{% endif %}>
-                <a href="{{ path('solustat_time_sheet_patient_list', {'page': p}) }}">{{ p }}</a>
+                <a href="{{ path('solustat_time_sheet_nurse_list', {'page': p}) }}">{{ p }}</a>
             </li>
         {% endfor %}
     </ul>

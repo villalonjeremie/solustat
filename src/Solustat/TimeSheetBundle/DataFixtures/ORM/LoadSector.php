@@ -23,7 +23,7 @@ class LoadSector extends Fixture
             $s = new Sector();
             $s->setName($sector['name']);
             $manager->persist($s);
-            $this->addReference(self::SECTOR_REFERENCE, $s);
+            $this->setReference(self::SECTOR_REFERENCE, $s);
         }
 
         $manager->flush();

@@ -2,7 +2,6 @@
 
 namespace Solustat\TimeSheetBundle\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -30,7 +29,7 @@ class Frequency
     private $nbRepPerTime;
 
     /**
-     * @ORM\Column(name="time", type="integer", nullable=false)
+     * @ORM\Column(name="time", type="string", nullable=false)
      */
     private $time;
 

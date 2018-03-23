@@ -40,7 +40,7 @@ class Nurse
     private $registrationNb;
 
     /**
-     * @ORM\Column(name="security_level", type="integer")
+     * @ORM\Column(name="security_level", type="string", length=255)
      */
     private $securityLevel;
 
@@ -55,6 +55,11 @@ class Nurse
     private $telMobile;
 
     /**
+     * @ORM\Column(name="created_at", type="datetime", nullable=true)
+     */
+    private $createdAt;
+
+    /**
      * @ORM\Column(name="updated_at", type="datetime", nullable=true)
      */
     private $updatedAt;
@@ -67,7 +72,7 @@ class Nurse
 
     public function __construct()
     {
-        $this->dateCreate   = new \Datetime();
+        $this->createdAt   = new \Datetime();
     }
 
     /**
@@ -302,5 +307,29 @@ class Nurse
     public function getSector()
     {
         return $this->sector;
+    }
+
+    /**
+     * Set createdAt
+     *
+     * @param \DateTime $createdAt
+     *
+     * @return Nurse
+     */
+    public function setCreatedAt($createdAt)
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    /**
+     * Get createdAt
+     *
+     * @return \DateTime
+     */
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
     }
 }

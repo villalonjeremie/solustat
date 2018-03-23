@@ -3,8 +3,10 @@ solustat_time_sheet_homepage:
     defaults: { _controller: SolustatTimeSheetBundle:Default:index }
 
 solustat_time_sheet_patient_list:
-    path:      /platform/patient/list
+    path:      /platform/patient/list/{page}
     defaults: { _controller: SolustatTimeSheetBundle:Patient:list }
+    requirements:
+        page: \d+
 
 solustat_time_sheet_patient_view:
     path:      /platform/patient/{id}
@@ -33,8 +35,10 @@ solustat_time_sheet_nurse_myaccount:
     defaults: { _controller: SolustatTimeSheetBundle:Nurse:myaccount }
 
 solustat_time_sheet_nurse_list:
-    path:      /platform/nurse/list
+    path:      /platform/nurse/list/{page}
     defaults: { _controller: SolustatTimeSheetBundle:Nurse:list }
+    requirements:
+        page: \d+
 
 solustat_time_sheet_nurse_view:
     path:      /platform/nurse/{id}

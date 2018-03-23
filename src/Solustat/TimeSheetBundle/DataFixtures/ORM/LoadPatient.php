@@ -120,6 +120,8 @@ class LoadPatient extends Fixture implements DependentFixtureInterface
             $p->setZip($patient['zip']);
             $p->setTown($patient['town']);
             $p->setTel($patient['tel']);
+            $p->setDate(new \Datetime());
+            $p->setUpdatedAt(new \Datetime());
             $p->setVisitTime($this->getReference(LoadVisitTime::VISIT_TIME_REFERENCE));
             $p->setSector($this->getReference(LoadSector::SECTOR_REFERENCE));
             $p->setTypeCare($this->getReference(LoadTypeCare::TYPE_CARE_REFERENCE));

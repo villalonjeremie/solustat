@@ -20,7 +20,7 @@ class LoadVisitTime extends Fixture
             $v = new VisitTime();
             $v->setName($visit['name']);
             $manager->persist($v);
-            $this->addReference(self::VISIT_TIME_REFERENCE, $v);
+            $this->setReference(self::VISIT_TIME_REFERENCE, $v);
         }
 
         $manager->flush();

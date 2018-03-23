@@ -1,12 +1,11 @@
 <?php
-
 namespace Solustat\TimeSheetBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
-use Solustat\TimeSheetBundle\Entity\Patient;
+use Solustat\TimeSheetBundle\Entity\Nurse;
 
-class PatientController extends Controller
+class NurseController extends Controller
 {
     public function listAction($page)
     {
@@ -16,19 +15,19 @@ class PatientController extends Controller
 
         $nbPerPage = 2;
 
-        $listPatients = $this->getDoctrine()
+        $listNurses = $this->getDoctrine()
             ->getManager()
-            ->getRepository('SolustatTimeSheetBundle:Patient')
-            ->getPatients($page, $nbPerPage);
+            ->getRepository('SolustatTimeSheetBundle:Nurse')
+            ->getNurses($page, $nbPerPage);
 
-        $nbPages = ceil(count($listPatients) / $nbPerPage);
+        $nbPages = ceil(count($listNurses) / $nbPerPage);
 
         if ($page > $nbPages) {
             throw $this->createNotFoundException("La page ".$page." n'existe pas.");
         }
 
-        return $this->render('SolustatTimeSheetBundle:Patient:list.html.twig', array(
-            'listPatients' => $listPatients,
+        return $this->render('SolustatTimeSheetBundle:Nurse:list.html.twig', array(
+            'listNurses' => $listNurses,
             'nbPages'     => $nbPages,
             'page'        => $page,
         ));

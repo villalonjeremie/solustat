@@ -37,7 +37,7 @@ class LoadTypeCare extends Fixture
             $tc->setName($care['name']);
             $tc->setColor($care['color']);
             $manager->persist($tc);
-            $this->addReference(self::TYPE_CARE_REFERENCE, $tc);
+            $this->setReference(self::TYPE_CARE_REFERENCE, $tc);
         }
 
         $manager->flush();

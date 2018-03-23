@@ -7,14 +7,14 @@ use Doctrine\Bundle\FixturesBundle\Fixture;
 
 class LoadFrequency extends Fixture
 {
-    const FREQUENCY_REFERENCE = '6 time per year';
+    const FREQUENCY_REFERENCE = '6 t per year';
 
     public function load(ObjectManager $manager)
     {
         $frequencies = array(
             array('nb_repetition' => '1',
                 'nb_rep_per_time' => '1',
-                'time' => "day"),
+                'time' => 'day'),
             array('nb_repetition' => '2',
                 'nb_rep_per_time' => '1',
                 'time' => "day"),
@@ -76,8 +76,8 @@ class LoadFrequency extends Fixture
             $f->setNbRepetition($frequency['nb_repetition']);
             $f->setNbRepPerTime($frequency['nb_rep_per_time']);
             $f->setTime($frequency['time']);
-            $manager->persist($frequency);
-            $this->addReference(self::FREQUENCY_REFERENCE, $f);
+            $manager->persist($f);
+            $this->setReference(self::FREQUENCY_REFERENCE, $f);
         }
 
         $manager->flush();

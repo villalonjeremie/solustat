@@ -2,6 +2,8 @@
 
 namespace Solustat\TimeSheetBundle\Repository;
 
+use Doctrine\ORM\Tools\Pagination\Paginator;
+
 /**
  * NurseRepository
  *
@@ -10,4 +12,11 @@ namespace Solustat\TimeSheetBundle\Repository;
  */
 class NurseRepository extends \Doctrine\ORM\EntityRepository
 {
+    public function getNurses($page, $nbPerPage)
+    {
+        $query = $this->createQueryBuilder('n')->getQuery();
+        $query->setFirstResult(($page-1) * $nbPerPage)->setMaxResults($nbPerPage);
+
+        return new Paginator($query, true);
+    }
 }

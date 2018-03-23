@@ -38,8 +38,7 @@ class LoadNurse extends Fixture implements DependentFixtureInterface
             $n->setTelMobile($nurse['tel_mobile']);
             $n->setUpdatedAt(new \Datetime());
             $n->setSector($this->getReference(LoadSector::SECTOR_REFERENCE));
-
-            $manager->persist($nurse);
+            $manager->persist($n);
         }
 
         $manager->flush();
