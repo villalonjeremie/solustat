@@ -2,9 +2,16 @@
 
 namespace Solustat\TimeSheetBundle\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Solustat\TimeSheetBundle\Entity\Patient;
+use Solustat\TimeSheetBundle\Form\PatientType;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\FormType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 class PatientController extends Controller
 {
@@ -64,57 +71,24 @@ class PatientController extends Controller
 //        ));
     }
 
-
-    /**
-     * @Security("has_role('ROLE_AUTEUR')")
-     */
     public function addAction(Request $request)
     {
-//        $advert = new Advert();
-//
-//        $form   = $this->get('form.factory')->create(AdvertType::class, $advert);
-//
-//
-//        $em = $this->getDoctrine()->getManager();
-//
-//        $advert = $em->getRepository('OCPlatformBundle:Advert')->find(13);
-//
-//
-//        $listSkills = $em->getRepository('OCPlatformBundle:Skill')->findAll();
-//
-//        // Pour chaque compétence
-//        foreach ($listSkills as $skill) {
-//            // On crée une nouvelle « relation entre 1 annonce et 1 compétence »
-//            $advertSkill = new AdvertSkill();
-//
-//            // On la lie à l'annonce, qui est ici toujours la même
-//            $advertSkill->setAdvert($advert);
-//            // On la lie à la compétence, qui change ici dans la boucle foreach
-//            $advertSkill->setSkill($skill);
-//
-//            // Arbitrairement, on dit que chaque compétence est requise au niveau 'Expert'
-//            $advertSkill->setLevel('Expert');
-//
-//            // Et bien sûr, on persiste cette entité de relation, propriétaire des deux autres relations
-//            $em->persist($advertSkill);
-//        }
-//
-//
-//        $em->persist($advert);
-//
-//        $em->flush();
-//
-//        if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
-//            // On récupère toutes les compétences possibles
-//
-//            $request->getSession()->getFlashBag()->add('notice', 'Annonce bien enregistrée.');
-//
-//            return $this->redirectToRoute('oc_platform_view', array('id' => $advert->getId()));
-//        }
-//
-//        return $this->render('OCPlatformBundle:Advert:add.html.twig', array(
-//            'form' => $form->createView(),
-//        ));
+        $patient = new Patient();
+        $patient->setCreatedAt(new \Datetime());
+        $form = $this->createForm(PatientType::class, $patient);
+
+        if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($patient);
+            $em->flush();
+
+            $request->getSession()->getFlashBag()->add('notice', 'Patient bien enregistré.');
+            return $this->redirectToRoute('SolustatTimeSheetBundle:Patient', array('id' => $patient->getId()));
+        }
+
+        return $this->render('SolustatTimeSheetBundle:Patient:form.html.twig', array(
+          'form' => $form->createView(),
+        ));
     }
 
     public function editAction($id, Request $request)

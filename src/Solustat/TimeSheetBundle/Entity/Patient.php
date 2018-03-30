@@ -55,6 +55,11 @@ class Patient
     private $tel;
 
     /**
+     * @ORM\Column(name="freq", type="string", length=255)
+     */
+    private $freq;
+
+    /**
      * @ORM\ManyToOne(targetEntity="Solustat\TimeSheetBundle\Entity\Sector", inversedBy="patients")
      * @ORM\JoinColumn(nullable=false)
      */
@@ -87,7 +92,6 @@ class Patient
      * @ORM\Column(name="updated_at", type="datetime", nullable=false)
      */
     private $updatedAt;
-
 
     public function __construct()
     {
@@ -454,5 +458,29 @@ class Patient
     public function getCreatedAt()
     {
         return $this->createdAt;
+    }
+
+    /**
+     * Set freq
+     *
+     * @param string $freq
+     *
+     * @return Patient
+     */
+    public function setFreq($freq)
+    {
+        $this->freq = $freq;
+
+        return $this;
+    }
+
+    /**
+     * Get freq
+     *
+     * @return string
+     */
+    public function getFreq()
+    {
+        return $this->freq;
     }
 }

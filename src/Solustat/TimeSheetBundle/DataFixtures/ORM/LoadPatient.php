@@ -20,7 +20,8 @@ class LoadPatient extends Fixture implements DependentFixtureInterface
                 'tel' => "5146217982",
                 'visit_time' => 'Soins durée 1h',
                 'sector' => '2',
-                'frequency' => '1'
+                'frequency' => '1',
+                'freq' => '1w1',
             ),
             array('folder_number'=>'2',
                 'name' => 'Alex',
@@ -32,8 +33,8 @@ class LoadPatient extends Fixture implements DependentFixtureInterface
                 'visit_time' => 'Soins normaux',
                 'sector' => '2',
                 'type_care' => 'Stomie',
-                'frequency' => '1'
-
+                'frequency' => '1',
+                'freq' => '1w1'
             ),
             array('folder_number'=>'3',
                 'name' => 'John',
@@ -45,8 +46,8 @@ class LoadPatient extends Fixture implements DependentFixtureInterface
                 'visit_time' => 'Soins normaux',
                 'sector' => '2',
                 'type_care' => 'Stomie',
-                'frequency' => '1'
-
+                'frequency' => '1',
+                'freq' => '1w1'
             ),
             array('folder_number'=>'4',
                 'name' => 'Sylvester',
@@ -58,7 +59,8 @@ class LoadPatient extends Fixture implements DependentFixtureInterface
                 'visit_time' => 'Soins normaux',
                 'sector' => '2',
                 'type_care' => 'Stomie',
-                'frequency' => '1'
+                'frequency' => '1',
+                'freq' => '1w1'
             ),
             array('folder_number'=>'5',
                 'name' => 'Coté',
@@ -70,7 +72,8 @@ class LoadPatient extends Fixture implements DependentFixtureInterface
                 'visit_time' => 'Soins durée 1h',
                 'sector' => '2',
                 'type_care' => 'Injection',
-                'frequency' => '1'
+                'frequency' => '1',
+                'freq' => '1w1'
             ),
             array('folder_number'=>'6',
                 'name' => 'Giroux',
@@ -82,7 +85,8 @@ class LoadPatient extends Fixture implements DependentFixtureInterface
                 'visit_time' => 'Soins normaux',
                 'sector' => '2',
                 'type_care' => 'Injection',
-                'frequency' => '1'
+                'frequency' => '1',
+                'freq' => '1w1'
             ),
             array('folder_number'=>'7',
                 'name' => 'Cinq-mars',
@@ -94,7 +98,8 @@ class LoadPatient extends Fixture implements DependentFixtureInterface
                 'visit_time' => 'Soins durée 1h',
                 'sector' => '2',
                 'type_care' => 'Injection',
-                'frequency' => '1'
+                'frequency' => '1',
+                'freq' => '1w1'
             ),
             array('folder_number'=>'8',
                 'name' => 'Couture',
@@ -106,7 +111,8 @@ class LoadPatient extends Fixture implements DependentFixtureInterface
                 'visit_time' => 'Soins durée 1h',
                 'sector' => '1',
                 'type_care' => 'Injection',
-                'frequency' => '1'
+                'frequency' => '1',
+                'freq' => '1w1'
             ),
         );
 
@@ -120,7 +126,8 @@ class LoadPatient extends Fixture implements DependentFixtureInterface
             $p->setZip($patient['zip']);
             $p->setTown($patient['town']);
             $p->setTel($patient['tel']);
-            $p->setDate(new \Datetime());
+            $p->setFreq($patient['freq']);
+            $p->setCreatedAt(new \Datetime());
             $p->setUpdatedAt(new \Datetime());
             $p->setVisitTime($this->getReference(LoadVisitTime::VISIT_TIME_REFERENCE));
             $p->setSector($this->getReference(LoadSector::SECTOR_REFERENCE));
