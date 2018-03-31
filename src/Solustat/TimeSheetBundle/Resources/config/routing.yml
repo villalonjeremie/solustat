@@ -1,5 +1,5 @@
 solustat_time_sheet_homepage:
-    path:     /platform
+    path:     /
     defaults: { _controller: SolustatTimeSheetBundle:Default:index }
 
 solustat_time_sheet_patient_list:

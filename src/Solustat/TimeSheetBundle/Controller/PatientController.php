@@ -116,8 +116,8 @@ class PatientController extends Controller
         }
     
         return $this->render('SolustatTimeSheetBundle:Patient:delete.html.twig', array(
-            'patient' => $patient,
-            'form'   => $form->createView(),
+            'patient'   => $patient,
+            'form'      => $form->createView(),
         ));
     }
 

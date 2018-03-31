@@ -1,3 +1,14 @@
 solustat_time_sheet:
     resource: "@SolustatTimeSheetBundle/Resources/config/routing.yml"
     prefix:   /
+
+login:
+    path: /login
+    defaults:
+      _controller: SolustatUserBundle:Security:login
+
+login_check:
+    path: /login_check
+
+logout:
+    path: /logout
