@@ -1,0 +1,10 @@
+{% extends "SolustatTimeSheetBundle::layout.html.twig" %}
+
+{% block title %}
+  Ajouter un employé(e) - {{ parent() }}
+{% endblock %}
+
+{% block solustattimesheet_body %}
+  <h2>Ajouter un employé(e)</h2>
+  {{ include("SolustatTimeSheetBundle:Patient:form.html.twig") }}
+{% endblock %}

@@ -7,16 +7,10 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Form\EntityManagerInterface;
 
 class FrequencyType extends AbstractType
 {
-    private $entityManager;
-
-    public function __construct(EntityManagerInterface $entityManager)
-    {
-        $this->entityManager = $entityManager;
-    }
-
     /**
      * {@inheritdoc}
      */
@@ -35,11 +29,6 @@ class FrequencyType extends AbstractType
         $resolver->setDefaults(array(
             'data_class' => 'Solustat\TimeSheetBundle\Entity\Frequency'
         ));
-    }
-
-    public function getParent()
-    {
-        return ChoiceType::class;
     }
 
     /**

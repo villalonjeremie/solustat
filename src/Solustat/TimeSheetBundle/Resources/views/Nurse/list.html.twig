@@ -7,17 +7,29 @@
 
 {% block solustattimesheet_body %}
     <h2>Liste du personnel</h2>
-
+    {% if app.session.flashBag.has('notice') %}
+        <div class="alert alert-success">
+            {% for msg in app.session.flashBag.get('notice') %}
+                {{ msg }}
+            {% endfor %}
+        </div>
+    {% endif %}
     <ul>
         {% for nurse in listNurses %}
             <li>
                 <a href="{{ path('solustat_time_sheet_nurse_view', {'id': nurse.id}) }}">
                     {{ nurse.name }}
                 </a>
+                <a href="{{ path('solustat_time_sheet_nurse_edit', {'id': nurse.id}) }}">
+                   / modifier
+                </a>
+                <a href="{{ path('solustat_time_sheet_nurse_delete', {'id': nurse.id}) }}">
+                   / supprimer
+                </a>
                 créé le {{ nurse.createdAt|date('d/m/Y') }}
             </li>
         {% else %}
-            <li>Pas (encore !) d'annonces</li>
+            <li>Pas (encore !) de fiche employé(e)</li>
         {% endfor %}
     </ul>
 

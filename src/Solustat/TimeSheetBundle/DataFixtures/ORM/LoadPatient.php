@@ -12,7 +12,7 @@ class LoadPatient extends Fixture implements DependentFixtureInterface
     {
         $patients = array(
             array('folder_number'=>'1',
-                'name' => 'Alexande',
+                    'name' => 'Alexande',
                 'surname' => 'Dupont',
                 'address' => "4470 rue Fabre",
                 'zip' => "H2J 3V2",

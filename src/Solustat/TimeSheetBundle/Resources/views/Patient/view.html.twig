@@ -1,0 +1,49 @@
+{% extends "SolustatTimeSheetBundle::layout.html.twig" %}
+
+{% block title %}
+  Dossier Patient - {{ parent() }}
+{% endblock %}
+
+{% block solustattimesheet_body %}
+  <div style="float: left; margin-right: 1em;">
+  <h2>{{ patient.name }} {{ patient.surname }}</h2>
+  <i>Crée le {{ patient.createdAt.date }}</i>
+  <div class="well">
+    Address : {{ patient.address }}
+  </div>
+    <div class="well">
+    Code Postal : {{ patient.zip }}
+  </div>
+  <div class="well">
+    Ville : {{ patient.town }}
+  </div>
+  <div class="well">
+    Tél : {{ patient.tel }}
+  </div>
+  <div class="well">
+    Secteur : {{ patient.sector.name }}
+  </div>
+  <div class="well">
+    Temps de visite : {{ patient.visitTime.name }}
+  </div>
+  <div class="well">
+    Type de soin : {{ patient.typeCare.name }}
+  </div>
+    <div class="well">
+    Fréquence : {{ patient.frequency.name }}
+  </div>
+  <p>
+    <a href="{{ path('solustat_time_sheet_patient_list', {'page': 1}) }}" class="btn btn-default">
+      <i class="glyphicon glyphicon-chevron-left"></i>
+      Retour à la liste
+    </a>
+    <a href="{{ path('solustat_time_sheet_patient_edit', {'id': patient.id}) }}" class="btn btn-default">
+      <i class="glyphicon glyphicon-edit"></i>
+      Modifier le patient
+    </a>
+    <a href="{{ path('solustat_time_sheet_patient_delete', {'id': patient.id}) }}" class="btn btn-danger">
+      <i class="glyphicon glyphicon-trash"></i>
+      Supprimer le patient
+    </a>
+  </p>
+{% endblock %}

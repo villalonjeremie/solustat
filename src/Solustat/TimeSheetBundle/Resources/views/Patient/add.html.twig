@@ -1,0 +1,9 @@
+{% extends "SolustatTimeSheetBundle::layout.html.twig" %}
+
+{% block title %}
+  Ajouter un patient - {{ parent() }}
+{% endblock %}
+
+{% block solustattimesheet_body %}
+  {{ include("SolustatTimeSheetBundle:Patient:form.html.twig") }}
+{% endblock %}

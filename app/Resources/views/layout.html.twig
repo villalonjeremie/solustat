@@ -26,8 +26,10 @@
             <ul class="nav nav-pills nav-stacked">
                 {#<li><a href="{{ path('solustat_time_sheet_dashboard') }}">Tableau de bord</a></li>#}
                 {#<li><a href="{{ path('solustat_time_sheet_nurse_myaccount') }}">Mon compte</a></li>#}
-                <li><a href="{{ path('solustat_time_sheet_nurse_list', {'page': 1}) }}">Liste du personnel</a></li>
+                <li><a href="{{ path('solustat_time_sheet_nurse_list', {'page': 1}) }}">Liste du personnel</a>
+                <li><a href="{{ path('solustat_time_sheet_nurse_add') }}">Ajouter un(e) emloyé(e)</a></li>
                 <li><a href="{{ path('solustat_time_sheet_patient_list', {'page': 1}) }}">Liste des patients</a></li>
+                <li><a href="{{ path('solustat_time_sheet_patient_add') }}">Ajouter un patient</a></li>
                 {#<li><a href="{{ path('solustat_time_sheet_bucket_list') }}">Patients à voir</a></li>#}
                 {#<li><a href="{{ path('solustat_time_sheet_nurse_day') }}">Mon emploi du temps</a></li>#}
             </ul>

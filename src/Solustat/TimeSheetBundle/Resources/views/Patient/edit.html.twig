@@ -1,0 +1,24 @@
+{% extends "SolustatTimeSheetBundle::layout.html.twig" %}
+
+{% block title %}
+  Modifier un patient - {{ parent() }}
+{% endblock %}
+
+{% block solustattimesheet_body %}
+
+  <h2>Modifier un patient</h2>
+
+  {{ include("SolustatTimeSheetBundle:Patient:form.html.twig") }}
+
+  <p>
+    Vous éditez un patient déjà existante.
+  </p>
+
+  <p>
+    <a href="{{ path('solustat_time_sheet_patient_view', {'id': patient.id}) }}" class="btn btn-default">
+      <i class="glyphicon glyphicon-chevron-left"></i>
+      Retour à l'annonce
+    </a>
+  </p>
+
+{% endblock %}

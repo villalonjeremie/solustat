@@ -25,6 +25,11 @@ class Patient
     private $folderNumber;
 
     /**
+     * @ORM\Column(name="starting_date", type="datetime", nullable=true)
+     */
+    private $startingDate;
+
+    /**
      * @ORM\Column(name="name", type="string", length=255)
      */
     private $name;
@@ -53,11 +58,6 @@ class Patient
      * @ORM\Column(name="tel", type="string", length=255)
      */
     private $tel;
-
-    /**
-     * @ORM\Column(name="freq", type="string", length=255)
-     */
-    private $freq;
 
     /**
      * @ORM\ManyToOne(targetEntity="Solustat\TimeSheetBundle\Entity\Sector", inversedBy="patients")
@@ -89,7 +89,7 @@ class Patient
     private $createdAt;
 
     /**
-     * @ORM\Column(name="updated_at", type="datetime", nullable=false)
+     * @ORM\Column(name="updated_at", type="datetime", nullable=true)
      */
     private $updatedAt;
 
@@ -482,5 +482,29 @@ class Patient
     public function getFreq()
     {
         return $this->freq;
+    }
+
+    /**
+     * Set startingDate
+     *
+     * @param \DateTime $startingDate
+     *
+     * @return Patient
+     */
+    public function setStartingDate($startingDate)
+    {
+        $this->startingDate = $startingDate;
+
+        return $this;
+    }
+
+    /**
+     * Get startingDate
+     *
+     * @return \DateTime
+     */
+    public function getStartingDate()
+    {
+        return $this->startingDate;
     }
 }

@@ -19,6 +19,11 @@ class Frequency
     private $id;
 
     /**
+     * @ORM\Column(name="name", type="string", nullable=false)
+     */
+    private $name;
+
+    /**
      * @ORM\Column(name="nb_repetition", type="integer", nullable=false)
      */
     private $nbRepetition;
@@ -161,5 +166,29 @@ class Frequency
     public function getPatients()
     {
         return $this->patients;
+    }
+
+    /**
+     * Set name
+     *
+     * @param string $name
+     *
+     * @return Frequency
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    /**
+     * Get name
+     *
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
     }
 }

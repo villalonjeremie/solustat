@@ -4,6 +4,13 @@ namespace Solustat\TimeSheetBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Solustat\TimeSheetBundle\Entity\Nurse;
+use Solustat\TimeSheetBundle\Form\NurseType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\FormType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 class NurseController extends Controller
 {
@@ -13,13 +20,12 @@ class NurseController extends Controller
             throw new NotFoundHttpException('Page "'.$page.'" inexistante.');
         }
 
-        $nbPerPage = 2;
+        $nbPerPage = 5;
 
         $listNurses = $this->getDoctrine()
             ->getManager()
             ->getRepository('SolustatTimeSheetBundle:Nurse')
             ->getNurses($page, $nbPerPage);
-
         $nbPages = ceil(count($listNurses) / $nbPerPage);
 
         if ($page > $nbPages) {
@@ -27,135 +33,93 @@ class NurseController extends Controller
         }
 
         return $this->render('SolustatTimeSheetBundle:Nurse:list.html.twig', array(
-            'listNurses' => $listNurses,
-            'nbPages'     => $nbPages,
-            'page'        => $page,
+            'listNurses'    => $listNurses,
+            'nbPages'       => $nbPages,
+            'page'          => $page,
         ));
     }
 
     public function viewAction($id)
     {
-//        $em = $this->getDoctrine()->getManager();
-//
-//        // Pour récupérer une seule annonce, on utilise la méthode find($id)
-//        $advert = $em->getRepository('OCPlatformBundle:Advert')->find($id);
-//
-//        // $advert est donc une instance de OC\PlatformBundle\Entity\Advert
-//        // ou null si l'id $id n'existe pas, d'où ce if :
-//        if (null === $advert) {
-//            throw new NotFoundHttpException("L'annonce d'id ".$id." n'existe pas.");
-//        }
-//
-//        // Récupération de la liste des candidatures de l'annonce
-//        $listApplications = $em
-//            ->getRepository('OCPlatformBundle:Application')
-//            ->findBy(array('advert' => $advert));
-//
-//        // Récupération des AdvertSkill de l'annonce
-//        $listAdvertSkills = $em
-//            ->getRepository('OCPlatformBundle:AdvertSkill')
-//            ->findBy(array('advert' => $advert));
-//
-//        return $this->render('OCPlatformBundle:Advert:view.html.twig', array(
-//            'advert'           => $advert,
-//            'listApplications' => $listApplications,
-//            'listAdvertSkills' => $listAdvertSkills,
-//        ));
+        $em = $this->getDoctrine()->getManager();
+        $nurse = $em->getRepository('SolustatTimeSheetBundle:Nurse')->find($id);
+        if (null === $nurse) {
+          throw new NotFoundHttpException("L'Employé(e) d'id ".$id." n'existe pas.");
+        }
+        
+        return $this->render('SolustatTimeSheetBundle:Nurse:view.html.twig', array(
+            'nurse' => $nurse,
+        ));
     }
 
-
-    /**
-     * @Security("has_role('ROLE_AUTEUR')")
-     */
     public function addAction(Request $request)
     {
-//        $advert = new Advert();
-//
-//        $form   = $this->get('form.factory')->create(AdvertType::class, $advert);
-//
-//
-//        $em = $this->getDoctrine()->getManager();
-//
-//        $advert = $em->getRepository('OCPlatformBundle:Advert')->find(13);
-//
-//
-//        $listSkills = $em->getRepository('OCPlatformBundle:Skill')->findAll();
-//
-//        // Pour chaque compétence
-//        foreach ($listSkills as $skill) {
-//            // On crée une nouvelle « relation entre 1 annonce et 1 compétence »
-//            $advertSkill = new AdvertSkill();
-//
-//            // On la lie à l'annonce, qui est ici toujours la même
-//            $advertSkill->setAdvert($advert);
-//            // On la lie à la compétence, qui change ici dans la boucle foreach
-//            $advertSkill->setSkill($skill);
-//
-//            // Arbitrairement, on dit que chaque compétence est requise au niveau 'Expert'
-//            $advertSkill->setLevel('Expert');
-//
-//            // Et bien sûr, on persiste cette entité de relation, propriétaire des deux autres relations
-//            $em->persist($advertSkill);
-//        }
-//
-//
-//        $em->persist($advert);
-//
-//        $em->flush();
-//
-//        if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
-//            // On récupère toutes les compétences possibles
-//
-//            $request->getSession()->getFlashBag()->add('notice', 'Annonce bien enregistrée.');
-//
-//            return $this->redirectToRoute('oc_platform_view', array('id' => $advert->getId()));
-//        }
-//
-//        return $this->render('OCPlatformBundle:Advert:add.html.twig', array(
-//            'form' => $form->createView(),
-//        ));
+        $nurse = new Nurse();
+        $nurse->setCreatedAt(new \Datetime());
+        $nurse->setSecurityLevel('user');
+        $form = $this->createForm(NurseType::class, $nurse);
+
+        if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($nurse);
+            $em->flush();
+
+            $request->getSession()->getFlashBag()->add('notice', 'Employé(e) bien enregistré.');
+            return $this->redirectToRoute('solustat_time_sheet_nurse_list', array('page' => 1));
+        }
+
+        return $this->render('SolustatTimeSheetBundle:Nurse:add.html.twig', array(
+          'form' => $form->createView(),
+        ));
     }
 
     public function editAction($id, Request $request)
     {
-//        $em = $this->getDoctrine()->getManager();
-//
-//        $advert = $em->getRepository('OCPlatformBundle:Advert')->find($id);
-//
-//        if (null === $advert) {
-//            throw new NotFoundHttpException("L'annonce d'id ".$id." n'existe pas.");
-//        }
-//
-//        if ($request->isMethod('POST')) {
-//            $request->getSession()->getFlashBag()->add('notice', 'Annonce bien modifiée.');
-//
-//            return $this->redirectToRoute('oc_platform_view', array('id' => $advert->getId()));
-//        }
-//
-//        return $this->render('OCPlatformBundle:Advert:edit.html.twig', array(
-//            'advert' => $advert
-//        ));
+        $em = $this->getDoctrine()->getManager();
+        $nurse = $em->getRepository('SolustatTimeSheetBundle:Nurse')->find($id);
+        $nurse->setUpdatedAt(new \Datetime());
+
+        if (null === $nurse) {
+            throw new NotFoundHttpException("L'Employé(e) id ".$id." n'existe pas.");
+        }
+
+        $form = $this->get('form.factory')->create(NurseType::class, $nurse);
+
+        if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
+            $em->flush();
+            $request->getSession()->getFlashBag()->add('notice', 'Employé(e) a bien été modifié.');
+            return $this->redirectToRoute('solustat_time_sheet_nurse_list', array('page' => 1));
+        }
+
+        return $this->render('SolustatTimeSheetBundle:Nurse:edit.html.twig', array(
+            'nurse' => $nurse,
+            'form'   => $form->createView(),
+        ));
     }
 
-    public function deleteAction($id)
+    public function deleteAction($id, Request $request)
     {
-//        $em = $this->getDoctrine()->getManager();
-//
-//        $advert = $em->getRepository('OCPlatformBundle:Advert')->find($id);
-//
-//        if (null === $advert) {
-//            throw new NotFoundHttpException("L'annonce d'id ".$id." n'existe pas.");
-//        }
-//
-//        // On boucle sur les catégories de l'annonce pour les supprimer
-//        foreach ($advert->getCategories() as $category) {
-//            $advert->removeCategory($category);
-//        }
-//
-//        $em->flush();
-//
-//        return $this->render('OCPlatformBundle:Advert:delete.html.twig');
+        $em = $this->getDoctrine()->getManager();
+        $nurse = $em->getRepository('SolustatTimeSheetBundle:Nurse')->find($id);
+
+        if (null === $nurse) {
+            throw new NotFoundHttpException("L'Employé(e) d'id ".$id." n'existe pas.");
+        }
+
+        $form = $this->get('form.factory')->create();
+        if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
+            $em->remove($nurse);
+            $em->flush();
+            $request->getSession()->getFlashBag()->add('notice', "L'Employé(e) a bien été supprimé.");
+            return $this->redirectToRoute('solustat_time_sheet_nurse_list', array('page' => 1));
+        }
+    
+        return $this->render('SolustatTimeSheetBundle:Nurse:delete.html.twig', array(
+            'nurse' => $nurse,
+            'form'   => $form->createView(),
+        ));
     }
+
 
     public function menuAction($limit)
     {
