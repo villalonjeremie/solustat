@@ -20,23 +20,16 @@
             Ce projet <e></e>st propulsé par JVi,
         </p>
     </div>
-    {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
         <div class="row">
             <div id="menu" class="col-md-3">
-                <h3>Utilisateur</h3>
-                    {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
-                      Connecté en tant que {{ app.user.username }}
-                      <br>
-                      <a href="{{ path('logout') }}">Déconnexion</a>
-                    {% else %}
-                      <a href="{{ path('login') }}">Connexion</a>
-                    {% endif %}
+
+
                 <h3>Les annonces</h3>
                 <ul class="nav nav-pills nav-stacked">
                     {#<li><a href="{{ path('solustat_time_sheet_dashboard') }}">Tableau de bord</a></li>#}
                     {#<li><a href="{{ path('solustat_time_sheet_nurse_myaccount') }}">Mon compte</a></li>#}
                     <li><a href="{{ path('solustat_time_sheet_nurse_list', {'page': 1}) }}">Liste du personnel</a>
-                    <li><a href="{{ path('solustat_time_sheet_nurse_add') }}">Ajouter un(e) emloyé(e)</a></li>
+                        <li><a href="{{ path('solustat_time_sheet_nurse_add') }}">Ajouter un(e) emloyé(e)</a></li>
                     <li><a href="{{ path('solustat_time_sheet_patient_list', {'page': 1}) }}">Liste des patients</a></li>
                     <li><a href="{{ path('solustat_time_sheet_patient_add') }}">Ajouter un patient</a></li>
                     {#<li><a href="{{ path('solustat_time_sheet_bucket_list') }}">Patients à voir</a></li>#}
@@ -50,12 +43,7 @@
                 {% endblock %}
             </div>
         </div>
-    {% else %}
-        <div id="content" class="col-md-12">
-            {% block body_login %}
-            {% endblock %}
-        </div>
-    {% endif %}
+
 
     <hr>
     <footer>
