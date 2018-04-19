@@ -16,3 +16,8 @@ services:
 
     Solustat\TimeSheetBundle\DataFixtures\:
          resource: '../../src/Solustat/TimeSheetBundle/DataFixtures/'
+
+    app.form.registration:
+        class: Solustat\TimeSheetBundle\Form\RegistrationFormType
+        tags:
+              - { name: form.type }
