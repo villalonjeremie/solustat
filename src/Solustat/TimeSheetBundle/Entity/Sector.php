@@ -35,6 +35,13 @@ class Sector
      * @ORM\JoinColumn(nullable=false)
      */
     private $nurses;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Solustat\TimeSheetBundle\Entity\User",mappedBy="sector")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $users;
+
     /**
      * Constructor
      */
@@ -144,5 +151,40 @@ class Sector
     public function getNurses()
     {
         return $this->nurses;
+    }
+    
+
+    /**
+     * Add user
+     *
+     * @param \Solustat\TimeSheetBundle\Entity\User $user
+     *
+     * @return Sector
+     */
+    public function addUser(\Solustat\TimeSheetBundle\Entity\User $user)
+    {
+        $this->users[] = $user;
+
+        return $this;
+    }
+
+    /**
+     * Remove user
+     *
+     * @param \Solustat\TimeSheetBundle\Entity\User $user
+     */
+    public function removeUser(\Solustat\TimeSheetBundle\Entity\User $user)
+    {
+        $this->users->removeElement($user);
+    }
+
+    /**
+     * Get users
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getUsers()
+    {
+        return $this->users;
     }
 }

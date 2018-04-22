@@ -69,6 +69,7 @@ class User extends BaseUser
     {
         parent::__construct();
         $this->createdAt   = new \Datetime();
+        $this->roles = array('ROLE_USER');
     }
 
 
@@ -286,5 +287,18 @@ class User extends BaseUser
     public function getPosition()
     {
         return $this->position;
+    }
+
+    /**
+     * @param $email
+     * @return $this|static
+     */
+    public function setEmail($email)
+    {
+        $email = is_null($email) ? '' : $email;
+        parent::setEmail($email);
+        $this->setUsername($email);
+
+        return $this;
     }
 }
