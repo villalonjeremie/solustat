@@ -80,4 +80,7 @@ fos_user:
         sender_name: "%mailer_user%"
     registration:
         form:
-            type: Solustat\TimeSheetBundle\Form\RegistrationType
+            type: Solustat\TimeSheetBundle\Form\RegistrationFormType
+    profile:
+        form:
+            type: Solustat\TimeSheetBundle\Form\ProfileFormType

@@ -21,3 +21,8 @@ services:
         class: Solustat\TimeSheetBundle\Form\RegistrationFormType
         tags:
               - { name: form.type }
+
+    app.form.profile:
+        class: Solustat\TimeSheetBundle\Form\ProfileFormType
+        tags:
+              - { name: form.type }
