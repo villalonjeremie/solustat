@@ -54,6 +54,9 @@ class NurseController extends Controller
 
     public function addAction(Request $request)
     {
+        if (!$this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
+            throw $this->createAccessDeniedException('GET OUT!');
+        }
         $nurse = new Nurse();
         $nurse->setCreatedAt(new \Datetime());
         $nurse->setSecurityLevel('user');
