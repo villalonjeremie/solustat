@@ -78,7 +78,7 @@ class PatientController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
         $patient = $em->getRepository('SolustatTimeSheetBundle:Patient')->find($id);
-        $nurse->setUpdatedAt(new \Datetime());
+        $patient->setUpdatedAt(new \Datetime());
 
         if (null === $patient) {
             throw new NotFoundHttpException("Le patient id ".$id." n'existe pas.");

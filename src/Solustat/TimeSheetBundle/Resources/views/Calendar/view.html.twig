@@ -1,0 +1,9 @@
+{% extends "SolustatTimeSheetBundle::layout.html.twig" %}
+
+{% block title %}
+    Calendar - {{ parent() }}
+{% endblock %}
+
+{% block solustattimesheet_body %}
+    {% include '@FullCalendar/Calendar/calendar.html.twig' %}
+{% endblock %}

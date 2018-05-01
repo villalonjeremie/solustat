@@ -1,32 +1,36 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>{% block title %}Solustat : Emploi du temps pour les libéraux{% endblock %}</title>
+        <title>{% block title %}Solustat : Emploi du temps pour les libéraux{% endblock %}</title>
 
-    {% block stylesheets %}
-        {# On charge le CSS de bootstrap depuis le site directement #}
-        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
-    {% endblock %}
-</head>
+        {% block stylesheets %}
+            {# On charge le CSS de bootstrap depuis le site directement #}
+            <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+            <link rel="stylesheet" href="{{ asset('bundles/fullcalendar/css/fullcalendar/fullcalendar.min.css') }}" />
+        {% endblock %}
+    </head>
 
-<body>
-<div class="container">
-    {% block body %}
-    {% endblock %}
-    <hr>
-    <footer>
-        <p>© {{ 'now'|date('Y') }}</p>
-    </footer>
-</div>
+    <body>
+        <div class="container">
+            {% block body %}
+            {% endblock %}
+            <hr>
+            <footer>
+                <p>© {{ 'now'|date('Y') }}</p>
+            </footer>
+        </div>
 
-{% block javascripts %}
-    {# Ajoutez ces lignes JavaScript si vous comptez vous servir des fonctionnalités du bootstrap Twitter #}
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
-{% endblock %}
-
-</body>
-</html>
+        {% block javascripts %}
+            {# Ajoutez ces lignes JavaScript si vous comptez vous servir des fonctionnalités du bootstrap Twitter #}
+            <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+            <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+            <script type="text/javascript" src="{{ asset('bundles/fullcalendar/js/fullcalendar/lib/jquery.min.js') }}"></script>
+            <script type="text/javascript" src="{{ asset('bundles/fullcalendar/js/fullcalendar/lib/moment.min.js') }}"></script>
+            <script type="text/javascript" src="{{ asset('bundles/fullcalendar/js/fullcalendar/fullcalendar.min.js') }}"></script>
+            <script type="text/javascript" src="{{ asset('bundles/solustattimesheet/js/fullcalendar.default-settings.js') }}"></script>
+        {% endblock %}
+    </body>
+</html>ß
