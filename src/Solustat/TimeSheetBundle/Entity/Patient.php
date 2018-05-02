@@ -4,6 +4,8 @@ namespace Solustat\TimeSheetBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Solustat\TimeSheetBundle\Entity\Event;
+
 
 /**
  * @ORM\Table(name="solustat_patient")
@@ -95,15 +97,15 @@ class Patient
 
     public function __construct()
     {
-        $this->dateCreate   = new \Datetime();
+        $this->createdAt   = new \Datetime();
     }
 
     /**
-     * @ORM\PreUpdate
+     * @ORM\PrePersist
      */
-    public function createDate()
+    public function createEventsIA()
     {
-        $this->setCreatedAt(new \Datetime());
+        die('coucou');
     }
 
     /**
@@ -112,6 +114,14 @@ class Patient
     public function updateDate()
     {
         $this->setUpdatedAt(new \Datetime());
+    }
+
+    /**
+     * @ORM\PreUpdate
+     */
+    public function updateEventsIA()
+    {
+       // $serviceEvents = $this->get('solustat_time_sheet_calendar.autoinsertevent');
     }
 
     /**
@@ -149,27 +159,27 @@ class Patient
     }
 
     /**
-     * Set date
+     * Set startingDate
      *
-     * @param \DateTime $date
+     * @param \DateTime $startingDate
      *
      * @return Patient
      */
-    public function setDate($date)
+    public function setStartingDate($startingDate)
     {
-        $this->date = $date;
+        $this->startingDate = $startingDate;
 
         return $this;
     }
 
     /**
-     * Get date
+     * Get startingDate
      *
      * @return \DateTime
      */
-    public function getDate()
+    public function getStartingDate()
     {
-        return $this->date;
+        return $this->startingDate;
     }
 
     /**
@@ -317,6 +327,30 @@ class Patient
     }
 
     /**
+     * Set createdAt
+     *
+     * @param \DateTime $createdAt
+     *
+     * @return Patient
+     */
+    public function setCreatedAt($createdAt)
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    /**
+     * Get createdAt
+     *
+     * @return \DateTime
+     */
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
+    }
+
+    /**
      * Set updatedAt
      *
      * @param \DateTime $updatedAt
@@ -434,77 +468,5 @@ class Patient
     public function getFrequency()
     {
         return $this->frequency;
-    }
-
-    /**
-     * Set createdAt
-     *
-     * @param \DateTime $createdAt
-     *
-     * @return Patient
-     */
-    public function setCreatedAt($createdAt)
-    {
-        $this->createdAt = $createdAt;
-
-        return $this;
-    }
-
-    /**
-     * Get createdAt
-     *
-     * @return \DateTime
-     */
-    public function getCreatedAt()
-    {
-        return $this->createdAt;
-    }
-
-    /**
-     * Set freq
-     *
-     * @param string $freq
-     *
-     * @return Patient
-     */
-    public function setFreq($freq)
-    {
-        $this->freq = $freq;
-
-        return $this;
-    }
-
-    /**
-     * Get freq
-     *
-     * @return string
-     */
-    public function getFreq()
-    {
-        return $this->freq;
-    }
-
-    /**
-     * Set startingDate
-     *
-     * @param \DateTime $startingDate
-     *
-     * @return Patient
-     */
-    public function setStartingDate($startingDate)
-    {
-        $this->startingDate = $startingDate;
-
-        return $this;
-    }
-
-    /**
-     * Get startingDate
-     *
-     * @return \DateTime
-     */
-    public function getStartingDate()
-    {
-        return $this->startingDate;
     }
 }
