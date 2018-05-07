@@ -78,6 +78,7 @@ class PatientController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
         $patient = $em->getRepository('SolustatTimeSheetBundle:Patient')->find($id);
+
         $patient->setUpdatedAt(new \Datetime());
 
         if (null === $patient) {

@@ -36,10 +36,10 @@ class Event
     private $patient;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Solustat\TimeSheetBundle\Entity\Nurse", inversedBy="events")
+     * @ORM\ManyToOne(targetEntity="Solustat\TimeSheetBundle\Entity\User", inversedBy="events")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $nurse;
+    private $user;
 
     /**
      * @ORM\ManyToOne(targetEntity="Solustat\TimeSheetBundle\Entity\VisitTime", inversedBy="events")
@@ -63,27 +63,11 @@ class Event
     }
 
     /**
-     * @ORM\PrePersist
-     */
-    public function createEventsIA()
-    {
-        die('coucou');
-    }
-
-    /**
      * @ORM\PreUpdate
      */
     public function updateDate()
     {
         $this->setUpdatedAt(new \Datetime());
-    }
-
-    /**
-     * @ORM\PreUpdate
-     */
-    public function updateEventsIA()
-    {
-        die('update');
     }
 
     /**
@@ -217,27 +201,27 @@ class Event
     }
 
     /**
-     * Set nurse
+     * Set user
      *
-     * @param \Solustat\TimeSheetBundle\Entity\Nurse $nurse
+     * @param \Solustat\TimeSheetBundle\Entity\User $user
      *
      * @return Event
      */
-    public function setNurse(\Solustat\TimeSheetBundle\Entity\Nurse $nurse)
+    public function setUser(\Solustat\TimeSheetBundle\Entity\User $user)
     {
-        $this->nurse = $nurse;
+        $this->user = $user;
 
         return $this;
     }
 
     /**
-     * Get nurse
+     * Get user
      *
-     * @return \Solustat\TimeSheetBundle\Entity\Nurse
+     * @return \Solustat\TimeSheetBundle\Entity\User
      */
-    public function getNurse()
+    public function getUser()
     {
-        return $this->nurse;
+        return $this->user;
     }
 
     /**

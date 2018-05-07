@@ -5,6 +5,8 @@ namespace Solustat\TimeSheetBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Solustat\TimeSheetBundle\Entity\Event;
+use Doctrine\Common\Persistence\Event\LifecycleEventArgs;
+
 
 
 /**
@@ -86,6 +88,12 @@ class Patient
     private $frequency;
 
     /**
+     * @ORM\ManyToOne(targetEntity="Solustat\TimeSheetBundle\Entity\User", inversedBy="patients")
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private $user;
+
+    /**
      * @ORM\Column(name="created_at", type="datetime", nullable=true)
      */
     private $createdAt;
@@ -98,30 +106,15 @@ class Patient
     public function __construct()
     {
         $this->createdAt   = new \Datetime();
-    }
 
-    /**
-     * @ORM\PrePersist
-     */
-    public function createEventsIA()
-    {
-        die('coucou');
     }
 
     /**
      * @ORM\PreUpdate
      */
-    public function updateDate()
+    public function updateDate(LifecycleEventArgs $args)
     {
         $this->setUpdatedAt(new \Datetime());
-    }
-
-    /**
-     * @ORM\PreUpdate
-     */
-    public function updateEventsIA()
-    {
-       // $serviceEvents = $this->get('solustat_time_sheet_calendar.autoinsertevent');
     }
 
     /**
@@ -468,5 +461,29 @@ class Patient
     public function getFrequency()
     {
         return $this->frequency;
+    }
+
+    /**
+     * Set user
+     *
+     * @param \Solustat\TimeSheetBundle\Entity\User $user
+     *
+     * @return Patient
+     */
+    public function setUser(\Solustat\TimeSheetBundle\Entity\User $user)
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * Get user
+     *
+     * @return \Solustat\TimeSheetBundle\Entity\User
+     */
+    public function getUser()
+    {
+        return $this->user;
     }
 }

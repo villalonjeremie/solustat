@@ -1,3 +1,4 @@
 services:
     solustat_time_sheet_calendar.autoinsertevent:
         class: Solustat\TimeSheetBundle\Service\AutoInsertEvents
+        arguments: [ "@doctrine.orm.entity_manager" , "@service_container" ]
