@@ -3,9 +3,10 @@ namespace Solustat\TimeSheetBundle\DataFixtures\ORM;
 
 use Doctrine\Common\Persistence\ObjectManager;
 use Solustat\TimeSheetBundle\Entity\Sector;
-use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Common\DataFixtures\AbstractFixture;
+use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 
-class LoadSector extends Fixture
+class LoadSector extends AbstractFixture
 {
     const SECTOR_REFERENCE = '5';
 
@@ -27,10 +28,5 @@ class LoadSector extends Fixture
         }
 
         $manager->flush();
-    }
-
-    public function getOrder()
-    {
-        return 1;
     }
 }

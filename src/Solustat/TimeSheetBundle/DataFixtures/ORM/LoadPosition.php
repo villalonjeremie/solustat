@@ -4,8 +4,9 @@ namespace Solustat\TimeSheetBundle\DataFixtures\ORM;
 use Doctrine\Common\Persistence\ObjectManager;
 use Solustat\TimeSheetBundle\Entity\Position;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 
-class LoadPosition extends Fixture
+class LoadPosition extends Fixture implements OrderedFixtureInterface
 {
     const POSITION_REFERENCE = 'infirmier(ere)';
 
@@ -24,5 +25,10 @@ class LoadPosition extends Fixture
         }
 
         $manager->flush();
+    }
+
+    public function getOrder()
+    {
+        return 2;
     }
 }

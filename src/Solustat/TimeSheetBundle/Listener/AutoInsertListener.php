@@ -13,18 +13,18 @@ class AutoInsertListener
     public function postPersist(LifecycleEventArgs $args)
     {
         $em = $args->getEntityManager();
-        $entity = $args->getEntity();
+        $entities = [];
+        $entities['patient'] = $args->getEntity();
 
-        if (!$entity instanceof Patient) {
+        if (!$entities['patient'] instanceof Patient) {
             return;
         }
 
-        $entityVisitTime = $entity->getVisitTime();
-       //$entity->get
+        $entities['visit_time'] = $entities['patient']->getVisitTime();
+        $entities['user'] = $entities['patient']->getUser();
 
-
-       // $patients = $em->getRepository('SolustatTimeSheetBundle:Event')
-         //   ->insertBulkEvents([1,2,3],$entity,$entityVisitTime);
+       $patients = $em->getRepository('SolustatTimeSheetBundle:Event')
+                    ->insertBulkEvents([1,2,3], $entities);
 
 
      //   var_dump($args);

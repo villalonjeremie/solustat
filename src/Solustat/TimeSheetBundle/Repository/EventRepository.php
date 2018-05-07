@@ -10,9 +10,11 @@ use Solustat\TimeSheetBundle\Entity\Event;
 class EventRepository extends \Doctrine\ORM\EntityRepository
 {
 
-    public function insertBulkEvents(array $arrayEvents)
+    public function insertBulkEvents(array $arrayEvents, array $entities)
     {
         $arraySize = count($arrayEvents);
+
+
 
         echo "Memory usage before: " . (memory_get_usage() / 1024) . " KB" . PHP_EOL;
         $s = microtime(true);
@@ -24,15 +26,13 @@ class EventRepository extends \Doctrine\ORM\EntityRepository
             $event->setTitle('test');
             $event->setStartingDate(new \Datetime('2018-10-02'));
             $event->setCreatedAt(new \Datetime());
-            //$event->setPatient();
-            //  $event->setNurse();
-            //$event->setVisitTime();
-
-
-
+            $event->setPatient($entities['patient']);
+            $event->setUser($entities['user']);
+            $event->setVisitTime($entities['visit_time']);
 
             $this->_em->persist($event);
 
+            $this->_em->flush();
 
             die(var_dump($arraySize));
 

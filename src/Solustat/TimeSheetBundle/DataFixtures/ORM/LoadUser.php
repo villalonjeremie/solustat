@@ -28,7 +28,6 @@ class LoadUser extends Fixture
                 'surname' => 'Villalon',
                 'registration_nb' => '1234',
                 'tel_work' => '0647146170',
-
                 'tel_mobile' => '0647146170',
                 'created_at' => new \Datetime('2018-05-07 02:22:45'),
                 'updated_at' => null,

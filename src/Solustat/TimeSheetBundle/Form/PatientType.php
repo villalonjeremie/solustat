@@ -48,7 +48,7 @@ class PatientType extends AbstractType
                 'class'        => 'SolustatTimeSheetBundle:Frequency',
                 'choice_label' => 'name',
                 'multiple'     => false))
-            ->add('Nurse', EntityType::class, array(
+            ->add('User', EntityType::class, array(
                 'class'        => 'SolustatTimeSheetBundle:User',
                 'choice_label' => 'name',
                 'multiple'     => false))
