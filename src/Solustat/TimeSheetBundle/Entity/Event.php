@@ -25,9 +25,9 @@ class Event
     private $title;
 
     /**
-     * @ORM\Column(name="starting_date", type="datetime", nullable=true)
+     * @ORM\Column(name="visit_date", type="datetime", nullable=true)
      */
-    private $startingDate;
+    private $visitDate;
 
     /**
      * @ORM\ManyToOne(targetEntity="Solustat\TimeSheetBundle\Entity\Patient", inversedBy="events")
@@ -105,27 +105,27 @@ class Event
     }
 
     /**
-     * Set startingDate
+     * Set visitDate
      *
-     * @param \DateTime $startingDate
+     * @param \DateTime $visitDate
      *
      * @return Event
      */
-    public function setStartingDate($startingDate)
+    public function setVisitDate($visitDate)
     {
-        $this->startingDate = $startingDate;
+        $this->visitDate = $visitDate;
 
         return $this;
     }
 
     /**
-     * Get startingDate
+     * Get visitDate
      *
      * @return \DateTime
      */
-    public function getStartingDate()
+    public function getVisitDate()
     {
-        return $this->startingDate;
+        return $this->visitDate;
     }
 
     /**

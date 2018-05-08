@@ -24,9 +24,9 @@ class AutoInsertListener
         $entities['user'] = $entities['patient']->getUser();
 
        $patients = $em->getRepository('SolustatTimeSheetBundle:Event')
-                    ->insertBulkEvents([1,2,3], $entities);
+                    ->insertBulkEvents($entities);
 
 
-     //   var_dump($args);
+        var_dump($args);
     }
 }
