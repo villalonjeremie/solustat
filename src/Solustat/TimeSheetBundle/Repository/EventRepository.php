@@ -16,7 +16,7 @@ class EventRepository extends EntityRepository
     public function insertBulkEvents(array $entities)
     {
         $patient = $entities['patient'];
-        $arrayEvents = $this->getArrayEvents($patient->getStartingDate(), $entities['frequency']);
+        $arrayEvents = $this->getArrayEvents($patient->getStartingDate(), $patient->getFrequency());
         $arraySize = count($arrayEvents);
 
         echo "Memory usage before: " . (memory_get_usage() / 1024) . " KB" . PHP_EOL;
@@ -56,29 +56,46 @@ class EventRepository extends EntityRepository
     private function getArrayEvents(\DateTime $startingDate, \Solustat\TimeSheetBundle\Entity\Frequency $frequency)
     {
         $result = [];
-        $startWeekNumber = $startingDate->format('W');
-        $year = $startingDate->format('Y');
+        $first_week_no = (int) $startingDate->format('W');
+        $year = (int) $startingDate->format('Y');
 
-        $weekCountPlentyYear = date('W', strtotime( $year . '-12-31'));
+        $last_week_of_year_no = (int) date('W', strtotime( $year . '-12-31'));
 
-        if ($weekCountPlentyYear == '01') {
-            $weekCountPlentyYear = date('W', strtotime($year . '-12-24'));
+        if ($last_week_of_year_no == 1) {
+            $last_week_of_year_no = (int) date('W', strtotime($year . '-12-24'));
         }
 
-        $weekRemainingThisYear = (int)$weekCountPlentyYear + 1 - (int)$startWeekNumber;
-        $weekRemainingNextYear = (int)$startWeekNumber - 1;
 
-        for ($i = (int) $startWeekNumber; $i <= $weekRemainingThisYear; ++$i) {
-            if ($frequency->getTime() === 'day')
-            {
-                for ($i=1; $i <= $arraySize; ++$i) {
-                $result[] = [
+        if ($frequency->getTime() === 'day') {
 
-                ];
+            $rangeActualYear = range($first_week_no, $last_week_of_year_no);
+
+            foreach ($rangeActualYear as $week_no) {
+                $week_start = new \DateTime();
+                $week_start->setISODate($year, $week_no);
+
+                for ($i = 0; $i < 7; $i++) {
+                    $result[] = $week_start->format('Y-m-d');
+                    $week_start->modify('+1 day');
+                }
             }
+
+            $rangeNextYear = range(1, $first_week_no);
+
+            if (($first_week_no - 1) != 0) {
+                foreach ($rangeNextYear as $week_no) {
+                    $week_start = new \DateTime();
+                    $week_start->setISODate($year + 1, $week_no);
+
+                    for ($i = 0; $i < 7; $i++) {
+                        $result[] = $week_start->format('Y-m-d');
+                        $week_start->modify('+1 day');
+                    }
+                }
+            }
+
         }
 
-        die;
         return $result;
 
     }
