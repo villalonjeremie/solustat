@@ -64,39 +64,231 @@ class EventRepository extends EntityRepository
         if ($last_week_of_year_no == 1) {
             $last_week_of_year_no = (int) date('W', strtotime($year . '-12-24'));
         }
+        $week_start = new \DateTime();
 
 
-        if ($frequency->getTime() === 'day') {
+        if ($frequency->getTime() === 'day' || ($frequency->getTime() === 'week' && $frequency->getNbRepPerTime() == 1)) {
 
             $rangeActualYear = range($first_week_no, $last_week_of_year_no);
 
-            foreach ($rangeActualYear as $week_no) {
-                $week_start = new \DateTime();
+            foreach ($rangeActualYear as $week_no)
+            {
                 $week_start->setISODate($year, $week_no);
 
-                for ($i = 0; $i < 7; $i++) {
-                    $result[] = $week_start->format('Y-m-d');
-                    $week_start->modify('+1 day');
+                if ($frequency->getTime() === 'day') {
+                    for ($i = 0; $i < 7; $i++) {
+
+                        for ($i = 0; $i < $frequency->getNbRepPerTime(); $i++) {
+                            $result[] = $week_start->format('Y-m-d');
+                        }
+
+                        $week_start->modify('+1 day');
+                    }
                 }
+
+                if ($frequency->getTime() === 'week') {
+
+                    if ($frequency->getNbRepetition() == 1) {
+                        $week_start->setISODate($year, $week_no, 3);
+                        $result[] = $week_start->format('Y-m-d');
+                    }
+
+                    if ($frequency->getNbRepetition() == 2) {
+                        $week_start->setISODate($year, $week_no, 2);
+                        $result[] = $week_start->format('Y-m-d');
+                        $week_start->setISODate($year, $week_no, 4);
+                        $result[] = $week_start->format('Y-m-d');
+                    }
+
+                    if ($frequency->getNbRepetition() == 3) {
+                        $week_start->setISODate($year, $week_no, 1);
+                        $result[] = $week_start->format('Y-m-d');
+                        $week_start->setISODate($year, $week_no, 3);
+                        $result[] = $week_start->format('Y-m-d');
+                        $week_start->setISODate($year, $week_no, 5);
+                        $result[] = $week_start->format('Y-m-d');
+                    }
+
+                    if ($frequency->getNbRepetition() == 4) {
+                        $week_start->setISODate($year, $week_no, 1);
+                        $result[] = $week_start->format('Y-m-d');
+                        $week_start->setISODate($year, $week_no, 2);
+                        $result[] = $week_start->format('Y-m-d');
+                        $week_start->setISODate($year, $week_no, 4);
+                        $result[] = $week_start->format('Y-m-d');
+                        $week_start->setISODate($year, $week_no, 6);
+                        $result[] = $week_start->format('Y-m-d');
+                    }
+
+                    if ($frequency->getNbRepetition() == 5) {
+                        $week_start->setISODate($year, $week_no, 1);
+                        $result[] = $week_start->format('Y-m-d');
+                        $week_start->setISODate($year, $week_no, 3);
+                        $result[] = $week_start->format('Y-m-d');
+                        $week_start->setISODate($year, $week_no, 4);
+                        $result[] = $week_start->format('Y-m-d');
+                        $week_start->setISODate($year, $week_no, 5);
+                        $result[] = $week_start->format('Y-m-d');
+                        $week_start->setISODate($year, $week_no, 7);
+                        $result[] = $week_start->format('Y-m-d');
+                    }
+
+                }
+
             }
 
             $rangeNextYear = range(1, $first_week_no);
 
             if (($first_week_no - 1) != 0) {
-                foreach ($rangeNextYear as $week_no) {
-                    $week_start = new \DateTime();
-                    $week_start->setISODate($year + 1, $week_no);
+                $year = $year + 1;
 
-                    for ($i = 0; $i < 7; $i++) {
-                        $result[] = $week_start->format('Y-m-d');
-                        $week_start->modify('+1 day');
+                foreach ($rangeNextYear as $week_no)
+                {
+                    if ($frequency->getTime() === 'day') {
+                        $week_start->setISODate($year, $week_no);
+
+                        for ($i = 0; $i < 7; $i++) {
+
+                            for ($i = 0; $i < $frequency->getNbRepPerTime(); $i++) {
+                                $result[] = $week_start->format('Y-m-d');
+                            }
+
+                            $week_start->modify('+1 day');
+                        }
                     }
+
+                    if ($frequency->getTime() === 'week') {
+
+
+                        if ($frequency->getNbRepPerTime() == 1)
+                            if ($frequency->getNbRepetition() == 1) {
+                                $week_start->setISODate($year, $week_no, 3);
+                                $result[] = $week_start->format('Y-m-d');
+                            }
+
+                            if ($frequency->getNbRepetition() == 2) {
+                                $week_start->setISODate($year, $week_no, 2);
+                                $result[] = $week_start->format('Y-m-d');
+                                $week_start->setISODate($year, $week_no, 4);
+                                $result[] = $week_start->format('Y-m-d');
+                            }
+
+                            if ($frequency->getNbRepetition() == 3) {
+                                $week_start->setISODate($year, $week_no, 1);
+                                $result[] = $week_start->format('Y-m-d');
+                                $week_start->setISODate($year, $week_no, 3);
+                                $result[] = $week_start->format('Y-m-d');
+                                $week_start->setISODate($year, $week_no, 5);
+                                $result[] = $week_start->format('Y-m-d');
+                            }
+
+                            if ($frequency->getNbRepetition() == 4) {
+                                $week_start->setISODate($year, $week_no, 1);
+                                $result[] = $week_start->format('Y-m-d');
+                                $week_start->setISODate($year, $week_no, 2);
+                                $result[] = $week_start->format('Y-m-d');
+                                $week_start->setISODate($year, $week_no, 4);
+                                $result[] = $week_start->format('Y-m-d');
+                                $week_start->setISODate($year, $week_no, 6);
+                                $result[] = $week_start->format('Y-m-d');
+                            }
+
+                            if ($frequency->getNbRepetition() == 5) {
+                                $week_start->setISODate($year, $week_no, 1);
+                                $result[] = $week_start->format('Y-m-d');
+                                $week_start->setISODate($year, $week_no, 3);
+                                $result[] = $week_start->format('Y-m-d');
+                                $week_start->setISODate($year, $week_no, 4);
+                                $result[] = $week_start->format('Y-m-d');
+                                $week_start->setISODate($year, $week_no, 5);
+                                $result[] = $week_start->format('Y-m-d');
+                                $week_start->setISODate($year, $week_no, 7);
+                                $result[] = $week_start->format('Y-m-d');
+                            }
+                        }
+
+                }
+
+            }
+
+        }
+
+
+        if ($frequency->getTime() === 'week' && $frequency->getNbRepPerTime() == 2) {
+            $rangeActualYear = range($first_week_no, $last_week_of_year_no, 2);
+
+            foreach ($rangeActualYear as $week_no) {
+                $week_start->setISODate($year, $week_no, 3);
+                $result[] = $week_start->format('Y-m-d');
+            }
+
+            $rangeNextYear = range(1, $first_week_no, 2);
+
+            if (($first_week_no - 1) != 0) {
+                $year = $year + 1;
+
+                foreach ($rangeNextYear as $week_no) {
+                    $week_start->setISODate($year, $week_no, 3);
+                    $result[] = $week_start->format('Y-m-d');
                 }
             }
 
         }
 
-        return $result;
+        if ($frequency->getTime() === 'week' && $frequency->getNbRepPerTime() == 3) {
+
+            $rangeActualYear = range($first_week_no, $last_week_of_year_no, 3);
+
+            foreach ($rangeActualYear as $week_no) {
+                if ($frequency->getNbRepetition() == 1) {
+                    $week_start->setISODate($year, $week_no, 3);
+                    $result[] = $week_start->format('Y-m-d');
+                }
+
+                if ($frequency->getNbRepetition() == 2) {
+                    $week_start->setISODate($year, $week_no, 4);
+                    $result[] = $week_start->format('Y-m-d');
+                    $week_start->setISODate($year, $week_no + 3, 1);
+                    $result[] = $week_start->format('Y-m-d');
+                }
+
+            }
+
+        $rangeNextYear = range(1, $first_week_no, 3);
+
+        if (($first_week_no - 1) != 0) {
+            $year = $year + 1;
+
+            foreach ($rangeNextYear as $week_no) {
+                if ($frequency->getNbRepetition() == 1) {
+                    $week_start->setISODate($year, $week_no, 3);
+                    $result[] = $week_start->format('Y-m-d');
+                }
+
+                if ($frequency->getNbRepetition() == 2) {
+                    $week_start->setISODate($year, $week_no, 4);
+                    $result[] = $week_start->format('Y-m-d');
+                    $week_start->setISODate($year, $week_no + 3, 1);
+                    $result[] = $week_start->format('Y-m-d');
+                }
+
+            }
+        }
+
+        if ($frequency->getTime() === 'month' && $frequency->getNbRepPerTime() == 1) {
+
+            $week_start->setISODate($year, $week_no, 3);
+            $result[] = $week_start->format('Y-m-d');
+            
+        }
+
+    }
+
+
+
+
+
+    return $result;
 
     }
 
