@@ -65,6 +65,7 @@ class EventRepository extends EntityRepository
         $last_week_of_year = (int) date('W', strtotime( $first_year_form . '-12-31'));
         $dayOfWeekStartingDate = (int)date("w", strtotime($startingDate->format('Y-m-d')));
 
+
         $flag_week_december = false;
 
         if ($last_week_of_year == 1) {
@@ -80,10 +81,10 @@ class EventRepository extends EntityRepository
 
         if ($frequency->getTime() === 'day' || ($frequency->getTime() === 'week' && $frequency->getNbRepPerTime() == 1)) {
 
-            if(!$flag_week_december) {
+            if (!$flag_week_december) {
                 $rangeActualYear = range($first_week_form, $last_week_of_year);
 
-                foreach ($rangeActualYear as $week_no) {
+                foreach ($rangeActualYear as $key => $week_no) {
                     $week_start->setISODate($first_year_form, $week_no);
 
                     if ($frequency->getTime() === 'day' && $week_no == $first_week_form) {
@@ -100,7 +101,7 @@ class EventRepository extends EntityRepository
                         }
                     }
 
-                    if ($frequency->getTime() === 'day' && $week_no != $first_week_form)  {
+                    if ($frequency->getTime() === 'day' && $week_no != $first_week_form) {
                         for ($i = 0; $i < 7; $i++) {
 
                             for ($j = 0; $j < $frequency->getNbRepetition(); $j++) {
@@ -112,24 +113,24 @@ class EventRepository extends EntityRepository
                     }
 
                     if ($frequency->getTime() === 'week') {
-
                         if ($frequency->getNbRepPerTime() == 1) {
                             if ($frequency->getNbRepetition() == 1) {
-                                $day = 3;
-                                if ($week_no == 1) {
+                                $day1 = 3;
+                                $day2 = 4;
+
+                                if ($key == 0) {
                                     if ($dayOfWeekStartingDate <= 3) {
-                                        $week_start->setISODate($first_year_form, $week_no, $day);
+                                        $week_start->setISODate($first_year_form, $week_no, $day1);
                                         $result[] = $week_start->format('Y-m-d');
                                     }
 
                                     if ($dayOfWeekStartingDate == 4) {
-                                        $day = 4;
-                                        $week_start->setISODate($first_year_form, $week_no, $day);
+                                        $week_start->setISODate($first_year_form, $week_no, $day2);
                                         $result[] = $week_start->format('Y-m-d');
                                     }
 
                                 } else {
-                                    $week_start->setISODate($first_year_form, $week_no, $day);
+                                    $week_start->setISODate($first_year_form, $week_no, $day1);
                                     $result[] = $week_start->format('Y-m-d');
                                 }
                             }
@@ -138,7 +139,7 @@ class EventRepository extends EntityRepository
                                 $day1 = 2;
                                 $day2 = 4;
 
-                                if ($week_no == 1) {
+                                if ($key == 0) {
                                     if ($dayOfWeekStartingDate <= 2) {
                                         $week_start->setISODate($first_year_form, $week_no, $day1);
                                         $result[] = $week_start->format('Y-m-d');
@@ -180,7 +181,7 @@ class EventRepository extends EntityRepository
                                 $day2 = 3;
                                 $day3 = 5;
 
-                                if ($week_no == 1) {
+                                if ($key == 0) {
                                     if ($dayOfWeekStartingDate == 1) {
                                         $day1 = 1;
                                         $day2 = 3;
@@ -220,13 +221,12 @@ class EventRepository extends EntityRepository
                             }
 
                             if ($frequency->getNbRepetition() == 4) {
-
                                 $day1 = 1;
                                 $day2 = 2;
                                 $day3 = 4;
-                                $day4 = 6;
+                                $day4 = 5;
 
-                                if ($week_no == 1) {
+                                if ($key == 0) {
                                     if ($dayOfWeekStartingDate == 1) {
                                         $week_start->setISODate($first_year_form, $week_no, $day1);
                                         $result[] = $week_start->format('Y-m-d');
@@ -255,7 +255,7 @@ class EventRepository extends EntityRepository
                                     }
 
                                     if ($dayOfWeekStartingDate == 5 || $dayOfWeekStartingDate == 6) {
-                                        $week_start->setISODate($next_year_form, $week_no, $day3);
+                                        $week_start->setISODate($first_year_form, $week_no, $day3);
                                         $result[] = $week_start->format('Y-m-d');
                                     }
 
@@ -272,14 +272,13 @@ class EventRepository extends EntityRepository
                             }
 
                             if ($frequency->getNbRepetition() == 5) {
-
                                 $day1 = 1;
-                                $day2 = 3;
-                                $day3 = 4;
-                                $day4 = 5;
-                                $day5 = 7;
+                                $day2 = 2;
+                                $day3 = 3;
+                                $day4 = 4;
+                                $day5 = 5;
 
-                                if ($week_no == 1) {
+                                if ($key == 0) {
                                     if ($dayOfWeekStartingDate == 1) {
                                         $week_start->setISODate($first_year_form, $week_no, $day1);
                                         $result[] = $week_start->format('Y-m-d');
@@ -337,25 +336,27 @@ class EventRepository extends EntityRepository
                                     }
                                 }
                             }
-
                         }
                     }
                 }
             }
 
+
+            //-----------------------------------------------------------------------------------//
+
             $next_year_form = $first_year_form + 1;
 
-            if($flag_week_december){
-                $first_week_form = (int) date('W', strtotime( $next_year_form . '-12-24'));
+            if ($flag_week_december) {
+                $first_week_form = (int)date('W', strtotime($next_year_form . '-12-24'));
             }
 
             $rangeNextYear = range(1, $first_week_form);
 
-            foreach ($rangeNextYear as $week_no) {
+            foreach ($rangeNextYear as $key => $week_no) {
 
                 if ($frequency->getTime() === 'day') {
 
-                    if ($week_no == 1){
+                    if ($key == 0) {
 
                         $week_start->setISODate($next_year_form, $week_no);
                         $week_start->modify('+' . ($dayOfWeekStartingDate - 1) . ' day');
@@ -370,7 +371,7 @@ class EventRepository extends EntityRepository
                         }
                     }
 
-                    if ($week_no != 1) {
+                    if ($key != 1) {
                         for ($i = 0; $i < 7; $i++) {
 
                             for ($j = 0; $j < $frequency->getNbRepetition(); $j++) {
@@ -386,62 +387,61 @@ class EventRepository extends EntityRepository
 
                     if ($frequency->getNbRepPerTime() == 1) {
                         if ($frequency->getNbRepetition() == 1) {
-                            $day = 3;
-                            if ($week_no == 1){
-                                if ($dayOfWeekStartingDate <= 3) {
-                                    $week_start->setISODate($next_year_form, $week_no, $day);
-                                    $result[] = $week_start->format('Y-m-d');
-                                }
-
-                                if ($dayOfWeekStartingDate == 4) {
-                                    $day = 4;
-                                    $week_start->setISODate($next_year_form, $week_no, $day);
-                                    $result[] = $week_start->format('Y-m-d');
-                                }
-
-                            } else {
-                                $week_start->setISODate($next_year_form, $week_no, $day);
-                                $result[] = $week_start->format('Y-m-d');
-                            }
-                        }
-
-                        if ($frequency->getNbRepetition() == 2) {
-                            $day1 = 2;
+                            $day1 = 3;
                             $day2 = 4;
 
-                            if ($week_no == 1){
-                                if ($dayOfWeekStartingDate <= 2) {
+                            if ($key == 0) {
+                                if ($dayOfWeekStartingDate <= 3) {
                                     $week_start->setISODate($next_year_form, $week_no, $day1);
-                                    $result[] = $week_start->format('Y-m-d');
-                                    $week_start->setISODate($next_year_form, $week_no, $day2);
-                                    $result[] = $week_start->format('Y-m-d');
-                                }
-
-                                if ($dayOfWeekStartingDate == 3) {
-                                    $day1 = 3;
-                                    $day2 = 5;
-                                    $week_start->setISODate($next_year_form, $week_no, $day1);
-                                    $result[] = $week_start->format('Y-m-d');
-                                    $week_start->setISODate($next_year_form, $week_no, $day2);
                                     $result[] = $week_start->format('Y-m-d');
                                 }
 
                                 if ($dayOfWeekStartingDate == 4) {
-                                    $day = 4;
-                                    $week_start->setISODate($next_year_form, $week_no, $day);
-                                    $result[] = $week_start->format('Y-m-d');
-                                }
-
-                                if ($dayOfWeekStartingDate == 5) {
-                                    $day = 5;
-                                    $week_start->setISODate($next_year_form, $week_no, $day);
+                                    $week_start->setISODate($next_year_form, $week_no, $day2);
                                     $result[] = $week_start->format('Y-m-d');
                                 }
 
                             } else {
                                 $week_start->setISODate($next_year_form, $week_no, $day1);
                                 $result[] = $week_start->format('Y-m-d');
-                                $week_start->setISODate($next_year_form, $week_no, $day2);
+                            }
+                        }
+
+                        if ($frequency->getNbRepetition() == 2) {
+                            $day1 = 2;
+                            $day2 = 3;
+                            $day3 = 4;
+                            $day4 = 5;
+
+                            if ($key == 0) {
+                                if ($dayOfWeekStartingDate <= 2) {
+                                    $week_start->setISODate($next_year_form, $week_no, $day1);
+                                    $result[] = $week_start->format('Y-m-d');
+                                    $week_start->setISODate($next_year_form, $week_no, $day3);
+                                    $result[] = $week_start->format('Y-m-d');
+                                }
+
+                                if ($dayOfWeekStartingDate == 3) {
+                                    $week_start->setISODate($next_year_form, $week_no, $day2);
+                                    $result[] = $week_start->format('Y-m-d');
+                                    $week_start->setISODate($next_year_form, $week_no, $day4);
+                                    $result[] = $week_start->format('Y-m-d');
+                                }
+
+                                if ($dayOfWeekStartingDate == 4) {
+                                    $week_start->setISODate($next_year_form, $week_no, $day3);
+                                    $result[] = $week_start->format('Y-m-d');
+                                }
+
+                                if ($dayOfWeekStartingDate == 5) {
+                                    $week_start->setISODate($next_year_form, $week_no, $day4);
+                                    $result[] = $week_start->format('Y-m-d');
+                                }
+
+                            } else {
+                                $week_start->setISODate($next_year_form, $week_no, $day1);
+                                $result[] = $week_start->format('Y-m-d');
+                                $week_start->setISODate($next_year_form, $week_no, $day3);
                                 $result[] = $week_start->format('Y-m-d');
                             }
                         }
@@ -451,12 +451,8 @@ class EventRepository extends EntityRepository
                             $day2 = 3;
                             $day3 = 5;
 
-                            if ($week_no == 1){
+                            if ($key == 0) {
                                 if ($dayOfWeekStartingDate == 1) {
-                                    $day1 = 1;
-                                    $day2 = 3;
-                                    $day3 = 5;
-
                                     $week_start->setISODate($next_year_form, $week_no, $day1);
                                     $result[] = $week_start->format('Y-m-d');
                                     $week_start->setISODate($next_year_form, $week_no, $day2);
@@ -466,8 +462,6 @@ class EventRepository extends EntityRepository
                                 }
 
                                 if ($dayOfWeekStartingDate == 2 || $dayOfWeekStartingDate == 3) {
-                                    $day2 = 3;
-                                    $day3 = 5;
                                     $week_start->setISODate($next_year_form, $week_no, $day2);
                                     $result[] = $week_start->format('Y-m-d');
                                     $week_start->setISODate($next_year_form, $week_no, $day3);
@@ -475,7 +469,6 @@ class EventRepository extends EntityRepository
                                 }
 
                                 if ($dayOfWeekStartingDate == 4 || $dayOfWeekStartingDate == 5) {
-                                    $day3 = 5;
                                     $week_start->setISODate($next_year_form, $week_no, $day3);
                                     $result[] = $week_start->format('Y-m-d');
                                 }
@@ -491,13 +484,12 @@ class EventRepository extends EntityRepository
                         }
 
                         if ($frequency->getNbRepetition() == 4) {
-
                             $day1 = 1;
                             $day2 = 2;
                             $day3 = 4;
-                            $day4 = 6;
+                            $day4 = 5;
 
-                            if ($week_no == 1){
+                            if ($key == 0) {
                                 if ($dayOfWeekStartingDate == 1) {
                                     $week_start->setISODate($next_year_form, $week_no, $day1);
                                     $result[] = $week_start->format('Y-m-d');
@@ -525,11 +517,10 @@ class EventRepository extends EntityRepository
                                     $result[] = $week_start->format('Y-m-d');
                                 }
 
-                                if ($dayOfWeekStartingDate == 5 || $dayOfWeekStartingDate == 6) {
+                                if ($dayOfWeekStartingDate == 5) {
                                     $week_start->setISODate($next_year_form, $week_no, $day3);
                                     $result[] = $week_start->format('Y-m-d');
                                 }
-
                             } else {
                                 $week_start->setISODate($next_year_form, $week_no, $day1);
                                 $result[] = $week_start->format('Y-m-d');
@@ -543,14 +534,13 @@ class EventRepository extends EntityRepository
                         }
 
                         if ($frequency->getNbRepetition() == 5) {
-
                             $day1 = 1;
-                            $day2 = 3;
-                            $day3 = 4;
-                            $day4 = 5;
-                            $day5 = 7;
+                            $day2 = 2;
+                            $day3 = 3;
+                            $day4 = 4;
+                            $day5 = 5;
 
-                            if ($week_no == 1){
+                            if ($key == 0) {
                                 if ($dayOfWeekStartingDate == 1) {
                                     $week_start->setISODate($next_year_form, $week_no, $day1);
                                     $result[] = $week_start->format('Y-m-d');
@@ -591,12 +581,7 @@ class EventRepository extends EntityRepository
                                     $result[] = $week_start->format('Y-m-d');
                                 }
 
-                                if ($dayOfWeekStartingDate == 6 || $dayOfWeekStartingDate == 7) {
-                                    $week_start->setISODate($next_year_form, $week_no, $day5);
-                                    $result[] = $week_start->format('Y-m-d');
-                                }
-
-                            else {
+                            } else {
                                 $week_start->setISODate($next_year_form, $week_no, $day1);
                                 $result[] = $week_start->format('Y-m-d');
                                 $week_start->setISODate($next_year_form, $week_no, $day2);
@@ -607,10 +592,12 @@ class EventRepository extends EntityRepository
                                 $result[] = $week_start->format('Y-m-d');
                                 $week_start->setISODate($next_year_form, $week_no, $day5);
                                 $result[] = $week_start->format('Y-m-d');
+                            }
                         }
                     }
                 }
             }
+
         }
 
         if ($frequency->getTime() === 'week' && $frequency->getNbRepPerTime() == 2) {
@@ -631,7 +618,6 @@ class EventRepository extends EntityRepository
                     $result[] = $week_start->format('Y-m-d');
                 }
             }
-
         }
 
         if ($frequency->getTime() === 'week' && $frequency->getNbRepPerTime() == 3) {
@@ -678,8 +664,8 @@ class EventRepository extends EntityRepository
             $rangeActualYear = range($first_week_form, $last_week_of_year, 4);
 
             foreach ($rangeActualYear as $week_no) {
-                    $week_start->setISODate($first_year_form, $week_no, $first_day_form);
-                    $result[] = $week_start->format('Y-m-d');
+                $week_start->setISODate($first_year_form, $week_no, $first_day_form);
+                $result[] = $week_start->format('Y-m-d');
             }
 
             $rangeNextYear = range(1, $first_week_form, 4);
@@ -918,7 +904,6 @@ class EventRepository extends EntityRepository
             }
         }
 
-    return $result;
-
+        return $result;
     }
 }

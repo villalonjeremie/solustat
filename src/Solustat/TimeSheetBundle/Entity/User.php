@@ -66,6 +66,13 @@ class User extends BaseUser
      */
     protected $position;
 
+    /**
+     * @ORM\OneToMany(targetEntity="Solustat\TimeSheetBundle\Entity\Patient",mappedBy="user")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $patients;
+
+
     public function __construct()
     {
         parent::__construct();
@@ -301,5 +308,39 @@ class User extends BaseUser
         $this->setUsername($email);
 
         return $this;
+    }
+
+    /**
+     * Add patient
+     *
+     * @param \Solustat\TimeSheetBundle\Entity\Patient $patient
+     *
+     * @return User
+     */
+    public function addPatient(\Solustat\TimeSheetBundle\Entity\Patient $patient)
+    {
+        $this->patients[] = $patient;
+
+        return $this;
+    }
+
+    /**
+     * Remove patient
+     *
+     * @param \Solustat\TimeSheetBundle\Entity\Patient $patient
+     */
+    public function removePatient(\Solustat\TimeSheetBundle\Entity\Patient $patient)
+    {
+        $this->patients->removeElement($patient);
+    }
+
+    /**
+     * Get patients
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getPatients()
+    {
+        return $this->patients;
     }
 }
