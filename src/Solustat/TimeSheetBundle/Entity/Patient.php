@@ -7,8 +7,6 @@ use Doctrine\ORM\Mapping as ORM;
 use Solustat\TimeSheetBundle\Entity\Event;
 use Doctrine\Common\Persistence\Event\LifecycleEventArgs;
 
-
-
 /**
  * @ORM\Table(name="solustat_patient")
  * @ORM\Entity(repositoryClass="Solustat\TimeSheetBundle\Repository\PatientRepository")
@@ -64,31 +62,31 @@ class Patient
     private $tel;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Solustat\TimeSheetBundle\Entity\Sector", inversedBy="patients")
+     * @ORM\ManyToOne(targetEntity="Solustat\TimeSheetBundle\Entity\Sector", inversedBy="patients", cascade={"persist"})
      * @ORM\JoinColumn(nullable=false)
      */
     private $sector;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Solustat\TimeSheetBundle\Entity\VisitTime", inversedBy="patients")
+     * @ORM\ManyToOne(targetEntity="Solustat\TimeSheetBundle\Entity\VisitTime", inversedBy="patients", cascade={"persist"})
      * @ORM\JoinColumn(nullable=false)
      */
     private $visitTime;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Solustat\TimeSheetBundle\Entity\TypeCare", inversedBy="patients")
+     * @ORM\ManyToOne(targetEntity="Solustat\TimeSheetBundle\Entity\TypeCare", inversedBy="patients", cascade={"persist"})
      * @ORM\JoinColumn(nullable=false)
      */
     private $typeCare;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Solustat\TimeSheetBundle\Entity\Frequency", inversedBy="patients")
+     * @ORM\ManyToOne(targetEntity="Solustat\TimeSheetBundle\Entity\Frequency", inversedBy="patients", cascade={"persist"})
      * @ORM\JoinColumn(nullable=false)
      */
     private $frequency;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Solustat\TimeSheetBundle\Entity\User", inversedBy="patients")
+     * @ORM\ManyToOne(targetEntity="Solustat\TimeSheetBundle\Entity\User", inversedBy="patients", cascade={"persist"})
      * @ORM\JoinColumn(nullable=true)
      */
     private $user;

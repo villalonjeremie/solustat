@@ -50,47 +50,62 @@ class EventRepository extends EntityRepository
     protected $lastDayOfLastWeekOfTheYear;
     protected $weekStart;
 
-    public function insertBulkEvents(array $entities)
+    public function insertNewBulkEvents(array $entities)
     {
         $patient = $entities['patient'];
 
-        $s = microtime(true);
-
         $arrayEvents = $this->getArrayEvents($patient->getStartingDate(), $patient->getFrequency());
-
-        $e = microtime(true);
-        $timeChrono = $s - $e;
 
         $arraySize = count($arrayEvents);
 
-        echo "Memory usage before: " . (memory_get_usage() / 1024) . " KB" . PHP_EOL;
-        $s = microtime(true);
-        $batchSize = 10;
+        $date = new \Datetime('now');
 
         for ($i=0; $i < $arraySize; $i++) {
             $event = new Event();
             $event->setTitle($patient->getName().' '.$patient->getSurname());
-            $event->setVisitDate(new \Datetime($patient->getStartingDate()));
-            $event->setCreatedAt(new \Datetime());
+            $event->setVisitDate(new \Datetime($arrayEvents[$i]));
+            $event->setCreatedAt($date);
             $event->setPatient($entities['patient']);
             $event->setUser($entities['user']);
             $event->setVisitTime($entities['visit_time']);
             $this->_em->persist($event);
-
-            if (($i % $batchSize) == 0) {
-                try {
-                    $this->_em->flush();
-                    $this->_em->clear();
-                } catch (ORMException $e) {
-                    throw new NoSuchMetadataException($e);
-                }
-            }
         }
 
-        $this->_em->flush();
-        $this->_em->clear();
+        try {
+            $this->_em->flush();
+            $this->_em->clear();
+        } catch (ORMException $e) {
+            throw new NoSuchMetadataException($e);
+        }
+    }
 
-        echo "Memory usage after: " . (memory_get_usage() / 1024) . " KB" . PHP_EOL;
+    public function insertUpdateBulkEvents(array $entities)
+    {
+        $patient = $entities['patient'];
+
+        $arrayEvents = $this->getArrayEvents($patient->getStartingDate(), $patient->getFrequency());
+
+        $arraySize = count($arrayEvents);
+
+        $date = new \Datetime('now');
+
+        for ($i=0; $i < $arraySize; $i++) {
+            $event = new Event();
+            $event->setTitle($patient->getName().' '.$patient->getSurname());
+            $event->setVisitDate(new \Datetime($arrayEvents[$i]));
+            $event->setCreatedAt($date);
+            $event->setPatient($entities['patient']);
+            $event->setUser($entities['user']);
+            $event->setVisitTime($entities['visit_time']);
+            $this->_em->persist($event);
+        }
+
+        try {
+            $this->_em->flush();
+            $this->_em->clear();
+        } catch (ORMException $e) {
+            throw new NoSuchMetadataException($e);
+        }
     }
 
     private function getArrayEvents(\DateTime $startingDate, \Solustat\TimeSheetBundle\Entity\Frequency $frequency)
@@ -186,7 +201,7 @@ class EventRepository extends EntityRepository
      * @param int $freq
      * @return array
      */
-    private function setResultPerYear(int $freq) : array
+    private function setResultPerYear($freq)
     {
         $this->shiftStartDate();
 
@@ -202,7 +217,7 @@ class EventRepository extends EntityRepository
      * @param int $freq
      * @return array
      */
-    protected function setResultPerMonth(int $freq) : array
+    protected function setResultPerMonth($freq)
     {
         $this->shiftStartDate();
         $rangeWeek = range($this->firstWeekForm, $this->firstWeekForm + self::INTERVAL_TIME_PLANNING_WEEKS, 4);
@@ -221,7 +236,7 @@ class EventRepository extends EntityRepository
      * @param int $freq
      * @return array
      */
-    protected function setResultOnePerWeek(int $freq) : array
+    protected function setResultOnePerWeek($freq)
     {
         $this->shiftStartDate();
         $rangeWeek = range($this->firstWeekForm, $this->firstWeekForm + self::INTERVAL_TIME_PLANNING_WEEKS);
@@ -240,7 +255,7 @@ class EventRepository extends EntityRepository
      * @param int $freq
      * @return array
      */
-    protected function setResultPerDay(int $freq) : array
+    protected function setResultPerDay($freq)
     {
         $this->shiftStartDate();
         $rangeWeek = range($this->firstWeekForm, $this->firstWeekForm + self::INTERVAL_TIME_PLANNING_WEEKS);

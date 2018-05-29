@@ -30,19 +30,19 @@ class Event
     private $visitDate;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Solustat\TimeSheetBundle\Entity\Patient", inversedBy="events")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\ManyToOne(targetEntity="Solustat\TimeSheetBundle\Entity\Patient", inversedBy="events", cascade={"persist"})
+     * @ORM\JoinColumn(nullable=false, onDelete="cascade")
      */
     private $patient;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Solustat\TimeSheetBundle\Entity\User", inversedBy="events")
+     * @ORM\ManyToOne(targetEntity="Solustat\TimeSheetBundle\Entity\User", inversedBy="events", cascade={"persist"})
      * @ORM\JoinColumn(nullable=false)
      */
     private $user;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Solustat\TimeSheetBundle\Entity\VisitTime", inversedBy="events")
+     * @ORM\ManyToOne(targetEntity="Solustat\TimeSheetBundle\Entity\VisitTime", inversedBy="events", cascade={"persist"})
      * @ORM\JoinColumn(nullable=false)
      */
     private $visitTime;

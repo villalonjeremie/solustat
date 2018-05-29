@@ -62,11 +62,16 @@ class PatientController extends Controller
 
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
             $em = $this->getDoctrine()->getManager();
-            $em->persist($patient);
-            $em->flush();
 
-            $request->getSession()->getFlashBag()->add('notice', 'Patient bien enregistré.');
-            return $this->redirectToRoute('solustat_time_sheet_patient_list', array('page' => 1));
+            try{
+                $em->persist($patient);
+                $em->flush();
+                $request->getSession()->getFlashBag()->add('notice', 'Patient bien enregistré.');
+                return $this->redirectToRoute('solustat_time_sheet_patient_list', array('page' => 1));
+            } catch (\Exception $e) {
+                $request->getSession()->getFlashBag()->add('error', 'Patient deja enregistré.');
+                return $this->redirectToRoute('solustat_time_sheet_patient_list', array('page' => 1));
+            }
         }
 
         return $this->render('SolustatTimeSheetBundle:Patient:add.html.twig', array(
