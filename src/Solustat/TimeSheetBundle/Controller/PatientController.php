@@ -91,6 +91,18 @@ class PatientController extends Controller
         }
 
         $form = $this->get('form.factory')->create(PatientType::class, $patient);
+        $parameters = $request->request->all();
+
+        //flag frequency updated or not
+        if (isset($parameters['solustat_timesheetbundle_patient']['Frequency'])){
+            $id = $parameters['solustat_timesheetbundle_patient']['Frequency'];
+            $frequencyName = $em->getRepository('SolustatTimeSheetBundle:Frequency')->find($id)->getName();
+            if($patient->getFrequency()->getName() != $frequencyName){
+                $this->get('session')->set('flagFrequencyModified', 1);
+            } else {
+                $this->get('session')->set('flagFrequencyModified', 0);
+            }
+        }
 
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
             $em->flush();
