@@ -29,7 +29,6 @@ class AutoInsertListener
 
         $em->getRepository('SolustatTimeSheetBundle:Event')
                     ->insertNewBulkEvents($entities);
-
     }
 
     public function postUpdate(LifecycleEventArgs $args)
