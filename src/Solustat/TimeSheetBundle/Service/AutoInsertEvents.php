@@ -5,7 +5,6 @@ namespace Solustat\TimeSheetBundle\Service;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\DependencyInjection\Container;
 
-
 class AutoInsertEvents
 {
     protected $em;

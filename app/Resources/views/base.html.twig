@@ -7,9 +7,9 @@
         <title>{% block title %}Solustat : Emploi du temps pour les libéraux{% endblock %}</title>
 
         {% block stylesheets %}
-            {# On charge le CSS de bootstrap depuis le site directement #}
-            <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
-            <link rel="stylesheet" href="{{ asset('bundles/fullcalendar/css/fullcalendar/fullcalendar.min.css') }}" />
+            <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+            <link href="{{ asset('bundles/solustattimesheet/css/fullcalendar.css') }}" rel="stylesheet" />
+            <link href="{{ asset('bundles/solustattimesheet/css/fullcalendar.print.css') }}" rel="stylesheet" media="print" />
         {% endblock %}
     </head>
 
@@ -25,12 +25,11 @@
 
         {% block javascripts %}
             {# Ajoutez ces lignes JavaScript si vous comptez vous servir des fonctionnalités du bootstrap Twitter #}
-            <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-            <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
-            <script type="text/javascript" src="{{ asset('bundles/fullcalendar/js/fullcalendar/lib/jquery.min.js') }}"></script>
-            <script type="text/javascript" src="{{ asset('bundles/fullcalendar/js/fullcalendar/lib/moment.min.js') }}"></script>
-            <script type="text/javascript" src="{{ asset('bundles/fullcalendar/js/fullcalendar/fullcalendar.min.js') }}"></script>
-            <script type="text/javascript" src="{{ asset('bundles/solustattimesheet/js/fullcalendar.default-settings.js') }}"></script>
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" crossorigin="anonymous"></script>
+            <script type="text/javascript" src="{{ asset('bundles/solustattimesheet/js/moment.min.js') }}"></script>
+            <script type="text/javascript" src="{{ asset('bundles/solustattimesheet/js/fullcalendar.js') }}"></script>
+            <script type="text/javascript" src="{{ asset('bundles/solustattimesheet/js/script.js') }}"></script>
         {% endblock %}
     </body>
 </html>ß
