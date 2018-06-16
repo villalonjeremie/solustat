@@ -57,6 +57,16 @@ class Event
      */
     private $updatedAt;
 
+    /**
+     * @ORM\Column(name="auto_generate", type="boolean", nullable=false)
+     */
+    private $autoGenerate;
+
+    /**
+     * @ORM\Column(name="linked", type="boolean", nullable=false)
+     */
+    private $linked;
+
     public function __construct()
     {
         $this->createdAt   = new \Datetime();
@@ -246,5 +256,53 @@ class Event
     public function getVisitTime()
     {
         return $this->visitTime;
+    }
+
+    /**
+     * Set autoGenerate
+     *
+     * @param boolean $autoGenerate
+     *
+     * @return Event
+     */
+    public function setAutoGenerate($autoGenerate)
+    {
+        $this->autoGenerate = $autoGenerate;
+
+        return $this;
+    }
+
+    /**
+     * Get autoGenerate
+     *
+     * @return boolean
+     */
+    public function getAutoGenerate()
+    {
+        return $this->autoGenerate;
+    }
+
+    /**
+     * Set linked
+     *
+     * @param boolean $linked
+     *
+     * @return Event
+     */
+    public function setLinked($linked)
+    {
+        $this->linked = $linked;
+
+        return $this;
+    }
+
+    /**
+     * Get linked
+     *
+     * @return boolean
+     */
+    public function getLinked()
+    {
+        return $this->linked;
     }
 }

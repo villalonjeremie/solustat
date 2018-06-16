@@ -3,16 +3,15 @@ $(document).ready(function(){
             header:{
                 left: 'prev,next today',
                 center: 'title',
-                right: 'agendaWeek,agendaDay'
+                right: 'month,agendaWeek,agendaDay'
             },
             defaultView: 'agendaWeek',
             editable: true,
             selectable: true,
-            allDaySlot: false,
+            allDaySlot: true,
             
-            events: "index.php?view=1",
-   
-            
+            events: "/app_dev.php/full-calendar/load",
+
             eventClick:  function(event, jsEvent, view) {
                 endtime = $.fullCalendar.moment(event.end).format('h:mm');
                 starttime = $.fullCalendar.moment(event.start).format('dddd, MMMM Do YYYY, h:mm');
@@ -37,7 +36,7 @@ $(document).ready(function(){
            },
            eventDrop: function(event, delta){
                $.ajax({
-                   url: 'index.php',
+                   url: '/app_dev.php/full-calendar/load',
                    data: 'action=update&title='+event.title+'&start='+moment(event.start).format()+'&end='+moment(event.end).format()+'&id='+event.id ,
                    type: "POST",
                    success: function(json) {
@@ -47,7 +46,7 @@ $(document).ready(function(){
            },
            eventResize: function(event) {
                $.ajax({
-                   url: 'index.php',
+                   url: '/app_dev.php/full-calendar/load',
                    data: 'action=update&title='+event.title+'&start='+moment(event.start).format()+'&end='+moment(event.end).format()+'&id='+event.id,
                    type: "POST",
                    success: function(json) {
@@ -73,7 +72,7 @@ $(document).ready(function(){
            $("#calendarModal").modal('hide');
            var eventID = $('#eventID').val();
            $.ajax({
-               url: 'index.php',
+               url: '/app_dev.php/full-calendar/load',
                data: 'action=delete&id='+eventID,
                type: "POST",
                success: function(json) {
@@ -81,11 +80,10 @@ $(document).ready(function(){
                         $("#calendar").fullCalendar('removeEvents',eventID);
                    else
                         return false;
-                    
-                   
                }
            });
        }
+
        function doSubmit(){
            $("#createEventModal").modal('hide');
            var title = $('#title').val();
@@ -93,7 +91,7 @@ $(document).ready(function(){
            var endTime = $('#endTime').val();
            
            $.ajax({
-               url: 'index.php',
+               url: '/app_dev.php/full-calendar/load',
                data: 'action=add&title='+title+'&start='+startTime+'&end='+endTime,
                type: "POST",
                success: function(json) {

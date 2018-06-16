@@ -6,11 +6,6 @@ solustat_time_sheet_calendar:
     path:     /calendar
     defaults: { _controller: SolustatTimeSheetBundle:Calendar:view }
 
-ancarebeca_full_calendar_load:
-    path:     /full-calendar/load
-    defaults:
-        _controller: FullCalendarBundle:Calendar:load
-
 solustat_time_sheet_patient_list:
     path:      /platform/patient/list/{page}
     defaults: { _controller: SolustatTimeSheetBundle:Patient:list }
@@ -90,3 +85,8 @@ solustat_time_sheet_nurse_month:
 solustat_time_sheet_nurse_year:
     path:      /platform/nurse/year
     defaults: { _controller: SolustatTimeSheetBundle:Nurse:year }
+
+solustat_full_calendar_load:
+    path:     /full-calendar/load
+    defaults:
+        _controller: SolustatTimeSheetBundle:Calendar:load

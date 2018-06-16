@@ -2,6 +2,7 @@
 namespace Solustat\TimeSheetBundle\Repository;
 
 use Solustat\TimeSheetBundle\Entity\Event;
+use Solustat\TimeSheetBundle\Entity\User;
 use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\Validator\Constraints\Date;
 use Symfony\Component\Validator\Exception\NoSuchMetadataException;
@@ -14,6 +15,7 @@ use Doctrine\ORM\EntityRepository;
  */
 class EventRepository extends EntityRepository
 {
+    const CARE_1H_TIMESTAMP = 3600;
     const ONE_TIME_PER_2_WEEK_DAY_1 = 3;
     const ONE_TIME_PER_3_WEEK_DAY_1 = 3;
     const TWO_TIME_PER_3_WEEK_DAY_1 = 4;
@@ -68,6 +70,8 @@ class EventRepository extends EntityRepository
             $event->setPatient($entities['patient']);
             $event->setUser($entities['user']);
             $event->setVisitTime($entities['visit_time']);
+            $event->setLinked(1);
+            $event->setAutoGenerate(1);
             $this->_em->persist($event);
         }
 
@@ -97,6 +101,8 @@ class EventRepository extends EntityRepository
             $event->setPatient($entities['patient']);
             $event->setUser($entities['user']);
             $event->setVisitTime($entities['visit_time']);
+            $event->setVisitTime($entities['visit_time']);
+
             $this->_em->persist($event);
         }
 
@@ -281,4 +287,34 @@ class EventRepository extends EntityRepository
             $this->dayOfWeekStartingDate = 1;
         }
     }
+
+    public function insertEvent(User $user, \DateTime $startingDate, \DateTime $endDate, Array $filter){
+
+        $visitTimeStamp = $endDate->getTimestamp()-$startingDate->getTimestamp();
+
+        if($visitTimeStamp >= self::CARE_1H_TIMESTAMP) {
+            $visitTime = $this->_em->getRepository('SolustatTimeSheetBundle:VisitTime')->findByName('Soins durée 1h');
+        } else {
+            $visitTime = $this->_em->getRepository('SolustatTimeSheetBundle:VisitTime')->findByName('Soins normaux');
+        }
+
+
+        $event = new Event();
+        $event->setTitle($filter['title']);
+        $event->setVisitDate($startingDate);
+        $event->setCreatedAt(new \DateTime('now', new \DateTimeZone('America/Montreal')));
+        $event->setPatient($filter['patient']);
+        $event->setUser($filter['userCurrent']);
+        $event->setVisitTime($visitTime);
+        $this->_em->persist($event);
+    }
+
+    public function updateEvent(){
+
+    }
+
+    public function deleteEvent(){
+
+    }
+
 }

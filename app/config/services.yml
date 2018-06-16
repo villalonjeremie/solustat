@@ -30,7 +30,7 @@ services:
     app_bundle.service.listener:
         class: Solustat\TimeSheetBundle\Listener\LoadDataListener
         tags:
-              - { name: 'kernel.event_listener', event: 'fullcalendar.set_data', method: loadData }
+              - { name: 'kernel.event_listener', event: 'solustat.fullcalendar.set_data', method: loadData }
 
     my.listener:
         class: Solustat\TimeSheetBundle\Listener\AutoInsertListener
