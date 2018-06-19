@@ -5,5 +5,7 @@
 {% endblock %}
 
 {% block solustattimesheet_body %}
-    {% include '@FullCalendar/Calendar/calendar.html.twig' %}
+    {% set patients = patients %}
+    {% set visitstime = visitstime %}
+    {% include "SolustatTimeSheetBundle:Calendar:calendar.html.twig" with {patients : patients, visitstime : visitstime} %}
 {% endblock %}

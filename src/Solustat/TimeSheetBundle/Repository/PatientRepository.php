@@ -19,4 +19,15 @@ class PatientRepository extends \Doctrine\ORM\EntityRepository
 
         return new Paginator($query, true);
     }
+
+    public function getPatientsByUser($user)
+    {
+        $result = $this->createQueryBuilder('p')
+                ->where('p.user = :user')
+                ->setParameter('user', $user)
+                ->getQuery()
+                ->getArrayResult();
+
+        return $result;
+    }
 }

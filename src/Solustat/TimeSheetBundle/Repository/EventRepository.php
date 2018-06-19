@@ -298,23 +298,34 @@ class EventRepository extends EntityRepository
             $visitTime = $this->_em->getRepository('SolustatTimeSheetBundle:VisitTime')->findByName('Soins normaux');
         }
 
+        $patient = $this->_em->getRepository('SolustatTimeSheetBundle:Patient')->find($filter['patientId']);
 
         $event = new Event();
-        $event->setTitle($filter['title']);
+        $event->setTitle($patient->getName().' '.$patient->getSurname());
         $event->setVisitDate($startingDate);
         $event->setCreatedAt(new \DateTime('now', new \DateTimeZone('America/Montreal')));
-        $event->setPatient($filter['patient']);
+        $event->setPatient($patient);
         $event->setUser($filter['userCurrent']);
-        $event->setVisitTime($visitTime);
+        $event->setVisitTime($visitTime[0]);
+        $event->setLinked(1);
+        $event->setAutoGenerate(0);
         $this->_em->persist($event);
+        $this->_em->flush();
+        $this->_em->clear();
+
+        return $event;
     }
 
     public function updateEvent(){
 
     }
 
-    public function deleteEvent(){
+    public function deleteEvent($id){
+        $event = $this->_em->getRepository('SolustatTimeSheetBundle:Event')->find($id);
+        $this->_em->remove($event);
+        $this->_em->flush();
 
+        return 1;
     }
 
 }

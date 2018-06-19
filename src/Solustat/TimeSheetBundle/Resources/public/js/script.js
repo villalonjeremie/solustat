@@ -18,6 +18,7 @@ $(document).ready(function(){
                 var mywhen = starttime + ' - ' + endtime;
                 $('#modalTitle').html(event.title);
                 $('#modalWhen').text(mywhen);
+                console.log(event.id);
                 $('#eventID').val(event.id);
                 $('#calendarModal').modal();
             },
@@ -26,7 +27,7 @@ $(document).ready(function(){
             select: function(start, end, jsEvent) {
                 endtime = $.fullCalendar.moment(end).format('h:mm');
                 starttime = $.fullCalendar.moment(start).format('dddd, MMMM Do YYYY, h:mm');
-                var mywhen = starttime + ' - ' + endtime;
+                var mywhen = starttime;
                 start = moment(start).format();
                 end = moment(end).format();
                 $('#createEventModal #startTime').val(start);
@@ -76,6 +77,9 @@ $(document).ready(function(){
                data: 'action=delete&id='+eventID,
                type: "POST",
                success: function(json) {
+
+                   console.log(json);
+
                    if(json == 1)
                         $("#calendar").fullCalendar('removeEvents',eventID);
                    else
@@ -85,22 +89,28 @@ $(document).ready(function(){
        }
 
        function doSubmit(){
-           $("#createEventModal").modal('hide');
-           var title = $('#title').val();
-           var startTime = $('#startTime').val();
-           var endTime = $('#endTime').val();
-           
+            $("#createEventModal").modal('hide');
+            var startTime = $('#startTime').val();
+            var patientId = $('#patients option:selected').val();
+            var patient = $('#patients option:selected').text();
+            var visitTimeStamp = $('#visits-time option:selected').val();
+            var visitTimeName = $('#visits-time option:selected').text();
+            var endTimeStamp = $.fullCalendar.moment(startTime).unix() + parseInt(visitTimeStamp);
+            var endTime = $.fullCalendar.moment(endTimeStamp*1000).format('YYYY-MM-DD[T]HH:mm:ss');
+
            $.ajax({
                url: '/app_dev.php/full-calendar/load',
-               data: 'action=add&title='+title+'&start='+startTime+'&end='+endTime,
+               data: 'action=add&patientId='+patientId+'&start='+startTime+'&end='+endTime,
                type: "POST",
                success: function(json) {
+
                    $("#calendar").fullCalendar('renderEvent',
                    {
-                       id: json.id,
-                       title: title,
+                       id: json[0].id,
+                       title: json[0].title,
                        start: startTime,
                        end: endTime,
+                       color: json[0].color
                    },
                    true);
                }

@@ -12,8 +12,10 @@ class LoadVisitTime extends Fixture
     public function load(ObjectManager $manager)
     {
         $visits = array(
-            array('name' => 'Soins durée 1h'),
-            array('name' => 'Soins normaux'),
+            array('name' => 'Soins durée 1h',
+                'timestamp' => 3600),
+            array('name' => 'Soins normaux',
+                'timestamp' => 1800),
         );
 
         foreach ($visits as $visit) {

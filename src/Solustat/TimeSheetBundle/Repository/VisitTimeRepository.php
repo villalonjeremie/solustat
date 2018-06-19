@@ -10,4 +10,12 @@ namespace Solustat\TimeSheetBundle\Repository;
  */
 class VisitTimeRepository extends \Doctrine\ORM\EntityRepository
 {
+    public function getAllVisitsTime()
+    {
+        $result = $this->createQueryBuilder('v')
+            ->getQuery()
+            ->getArrayResult();
+
+        return $result;
+    }
 }

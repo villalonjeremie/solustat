@@ -43,43 +43,36 @@ class LoadDataListener
 
         switch ($this->filters['action']) {
             case 'add':
-                $this->addAction();
+                $this->addAction($calendarEvent);
                 break;
             case 'update':
-                $this->updateAction();
-                break;
-            case 'delete':
-                $this->deleteAction();
+                $this->updateAction($calendarEvent);
                 break;
             default:
                 $this->loadAction($calendarEvent);
         }
     }
 
-    private function addAction()
+    private function addAction(EventCalendarEvent $calendarEvent)
     {
-        $this->em->getRepository('SolustatTimeSheetBundle:Event')->insertEvent(
-            $this->userCurrent,
-            $this->startDate,
-            $this->endDate,
-            $this->filters
-        );
-    }
-
-    private function updateAction()
-    {
-        $this->em->getRepository('SolustatTimeSheetBundle:Event')->insertEvent(
+        $event = $this->em->getRepository('SolustatTimeSheetBundle:Event')->insertEvent(
             $this->userCurrent,
             $this->startDate,
             $this->endDate,
             $this->filters
         );
 
+        $calendarEvent->addEvent(new FullCalendarEvent(
+            $event->getId(),
+            $event->getTitle(),
+            $event->getVisitDate(),
+            $event->getPatient()
+        ));
     }
 
-    private function deleteAction()
+    private function updateAction(EventCalendarEvent $calendarEvent)
     {
-        $this->em->getRepository('SolustatTimeSheetBundle:Event')->deleteEvent(
+        $event = $this->em->getRepository('SolustatTimeSheetBundle:Event')->insertEvent(
             $this->userCurrent,
             $this->startDate,
             $this->endDate,
@@ -103,6 +96,7 @@ class LoadDataListener
 
         foreach ($events as $event) {
             $calendarEvent->addEvent(new FullCalendarEvent(
+                $event->getId(),
                 $event->getTitle(),
                 $event->getVisitDate(),
                 $event->getPatient()

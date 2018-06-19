@@ -27,8 +27,9 @@ abstract class FullCalendarEvent
      * @param \DateTime $start
      * @param Patient $patient
      */
-    public function __construct($title, \DateTime $start, Patient $patient)
+    public function __construct($id, $title, \DateTime $start, Patient $patient)
     {
+        $this->id = $id;
         $this->title = $title;
         $this->startDate = $start;
         $this->patient = $patient;

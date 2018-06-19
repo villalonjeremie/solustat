@@ -29,6 +29,12 @@ class VisitTime
      * @ORM\JoinColumn(nullable=false)
      */
     private $patients;
+
+    /**
+     * @ORM\Column(name="timestamp", type="integer")
+     */
+    private $timeStamp;
+
     /**
      * Constructor
      */
@@ -103,5 +109,29 @@ class VisitTime
     public function getPatients()
     {
         return $this->patients;
+    }
+
+    /**
+     * Set timeStamp
+     *
+     * @param int $timeStamp
+     *
+     * @return VisitTime
+     */
+    public function setTimeStamp($timeStamp)
+    {
+        $this->timeStamp = $timeStamp;
+
+        return $this;
+    }
+
+    /**
+     * Get timeStamp
+     *
+     * @return \int
+     */
+    public function getTimeStamp()
+    {
+        return $this->timeStamp;
     }
 }
