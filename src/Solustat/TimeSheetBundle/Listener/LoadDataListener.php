@@ -66,18 +66,27 @@ class LoadDataListener
             $event->getId(),
             $event->getTitle(),
             $event->getVisitDate(),
-            $event->getPatient()
+            $event->getPatient(),
+            $event->getVisitTime()
         ));
     }
 
     private function updateAction(EventCalendarEvent $calendarEvent)
     {
-        $event = $this->em->getRepository('SolustatTimeSheetBundle:Event')->insertEvent(
+        $event = $this->em->getRepository('SolustatTimeSheetBundle:Event')->updateEvent(
             $this->userCurrent,
             $this->startDate,
             $this->endDate,
             $this->filters
         );
+
+        $calendarEvent->addEvent(new FullCalendarEvent(
+            $event->getId(),
+            $event->getTitle(),
+            $event->getVisitDate(),
+            $event->getPatient(),
+            $event->getVisitTime()
+        ));
 
     }
 
@@ -88,9 +97,11 @@ class LoadDataListener
             ->where('e.visitDate >= :startDate')
             ->andWhere('e.visitDate <= :endDate')
             ->andWhere('e.user = :id')
+            ->andWhere('e.linked = :linked')
             ->setParameter('startDate', $this->startDate)
             ->setParameter('endDate', $this->endDate)
             ->setParameter('id', $this->userCurrent->getId())
+            ->setParameter('linked',1)
             ->getQuery()
             ->execute();
 
@@ -99,7 +110,8 @@ class LoadDataListener
                 $event->getId(),
                 $event->getTitle(),
                 $event->getVisitDate(),
-                $event->getPatient()
+                $event->getPatient(),
+                $event->getVisitTime()
             ));
         }
     }

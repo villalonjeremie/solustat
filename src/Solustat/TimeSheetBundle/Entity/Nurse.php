@@ -72,7 +72,7 @@ class Nurse
 
     public function __construct()
     {
-        $this->createdAt   = new \Datetime();
+        $this->createdAt   = new \DateTime('now');
     }
 
     /**
@@ -80,7 +80,7 @@ class Nurse
      */
     public function updateDate()
     {
-        $this->setUpdatedAt(new \Datetime());
+        $this->setUpdatedAt(new \DateTime('now'));
     }
 
     /**

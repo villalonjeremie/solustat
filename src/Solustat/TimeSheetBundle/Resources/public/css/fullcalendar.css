@@ -1395,3 +1395,24 @@ be a descendant of the grid when it is being dragged.
 .fc-unthemed .fc-list-empty { /* theme will provide own background */
 	background-color: #eee;
 }
+
+.loading-image {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	z-index: 10;
+}
+.loader
+{
+	display: none;
+	width:200px;
+	height: 200px;
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	text-align:center;
+	margin-left: -50px;
+	margin-top: -100px;
+	z-index:2;
+	overflow: auto;
+}

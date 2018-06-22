@@ -57,7 +57,7 @@ class PatientController extends Controller
     public function addAction(Request $request)
     {
         $patient = new Patient();
-        $patient->setCreatedAt(new \Datetime());
+        $patient->setCreatedAt(new \DateTime('now'));
         $form = $this->createForm(PatientType::class, $patient);
 
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
@@ -84,7 +84,7 @@ class PatientController extends Controller
         $em = $this->getDoctrine()->getManager();
         $patient = $em->getRepository('SolustatTimeSheetBundle:Patient')->find($id);
 
-        $patient->setUpdatedAt(new \Datetime());
+        $patient->setUpdatedAt(new \DateTime('now'));
 
         if (null === $patient) {
             throw new NotFoundHttpException("Le patient id ".$id." n'existe pas.");

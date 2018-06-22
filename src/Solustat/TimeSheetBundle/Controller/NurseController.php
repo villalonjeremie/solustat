@@ -58,7 +58,7 @@ class NurseController extends Controller
             throw $this->createAccessDeniedException('GET OUT!');
         }
         $nurse = new Nurse();
-        $nurse->setCreatedAt(new \Datetime());
+        $nurse->setCreatedAt(new \DateTime('now'));
         $nurse->setSecurityLevel('user');
         $form = $this->createForm(NurseType::class, $nurse);
 
@@ -80,7 +80,7 @@ class NurseController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
         $nurse = $em->getRepository('SolustatTimeSheetBundle:Nurse')->find($id);
-        $nurse->setUpdatedAt(new \Datetime());
+        $nurse->setUpdatedAt(new \DateTime('now'));
 
         if (null === $nurse) {
             throw new NotFoundHttpException("L'Employé(e) id ".$id." n'existe pas.");

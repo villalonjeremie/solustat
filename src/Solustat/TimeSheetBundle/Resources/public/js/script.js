@@ -42,6 +42,12 @@ $(document).ready(function(){
                    type: "POST",
                    success: function(json) {
                    //alert(json);
+                   },
+                   beforeSend: function(){
+                       $('.loader').show()
+                   },
+                   complete: function(){
+                       $('.loader').hide();
                    }
                });
            },
@@ -52,22 +58,31 @@ $(document).ready(function(){
                    type: "POST",
                    success: function(json) {
                        //alert(json);
+                   },
+                   beforeSend: function(){
+                       $('.loader').show()
+                   },
+                   complete: function(){
+                       $('.loader').hide();
                    }
                });
            }
         });
                
        $('#submitButton').on('click', function(e){
-           // We don't want this to act as a link so cancel the link action
            e.preventDefault();
            doSubmit();
        });
        
        $('#deleteButton').on('click', function(e){
-           // We don't want this to act as a link so cancel the link action
            e.preventDefault();
            doDelete();
        });
+
+        $('#unlinkButton').on('click', function(e){
+            e.preventDefault();
+            doUnlink();
+        });
        
        function doDelete(){
            $("#calendarModal").modal('hide');
@@ -77,16 +92,41 @@ $(document).ready(function(){
                data: 'action=delete&id='+eventID,
                type: "POST",
                success: function(json) {
-
-                   console.log(json);
-
                    if(json == 1)
                         $("#calendar").fullCalendar('removeEvents',eventID);
                    else
                         return false;
+               },
+               beforeSend: function(){
+                   $('.loader').show()
+               },
+               complete: function(){
+                   $('.loader').hide();
                }
            });
        }
+
+        function doUnlink(){
+            $("#calendarModal").modal('hide');
+            var eventID = $('#eventID').val();
+            $.ajax({
+                url: '/app_dev.php/full-calendar/load',
+                data: 'action=unlink&id='+eventID,
+                type: "POST",
+                success: function(json) {
+                    if(json == 1)
+                        $("#calendar").fullCalendar('removeEvents',eventID);
+                    else
+                        return false;
+                },
+                beforeSend: function(){
+                    $('.loader').show()
+                },
+                complete: function(){
+                    $('.loader').hide();
+                }
+            });
+        }
 
        function doSubmit(){
             $("#createEventModal").modal('hide');
@@ -113,6 +153,12 @@ $(document).ready(function(){
                        color: json[0].color
                    },
                    true);
+               },
+               beforeSend: function(){
+                   $('.loader').show()
+               },
+               complete: function(){
+                   $('.loader').hide();
                }
            });
            

@@ -1,0 +1,36 @@
+{% extends "SolustatTimeSheetBundle::layout.html.twig" %}
+
+{% block title %}
+    Liste des rendez-vous sans infirmier  - {{ parent() }}
+{% endblock %}
+
+{% block solustattimesheet_body %}
+    <h2>Liste des rendez-vous</h2>
+    {% if app.session.flashBag.has('notice') %}
+        <div class="alert alert-success">
+            {% for msg in app.session.flashBag.get('notice') %}
+                {{ msg }}
+            {% endfor %}
+        </div>
+    {% endif %}
+    <ul>
+        {% for event in listEvents %}
+            <li>
+                <a href="{{ path('solustat_time_sheet_patient_view', {'id': event.id}) }}">
+                    {{ event.title }} prévu le {{ event.visitDate }}
+                </a>
+                créé le {{ event.createdAt|date('d/m/Y') }} - sans assistance
+            </li>
+        {% else %}
+            <li>Pas (encore !) de rendez vous sans infirmier</li>
+        {% endfor %}
+    </ul>
+
+    <ul class="pagination">
+        {% for p in range(1, nbPages) %}
+            <li{% if p == page %} class="active"{% endif %}>
+                <a href="{{ path('solustat_time_sheet_eventfree_list', {'page': p}) }}">{{ p }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}

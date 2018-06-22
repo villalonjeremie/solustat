@@ -74,7 +74,7 @@ class LoadPatient extends Fixture implements DependentFixtureInterface
                 'zip' => "H2J 3V2",
                 'town' => "MONTREAL",
                 'tel' => "5146217982"
-            ),
+            )
         );
 
         foreach ($patients as $patient) {
@@ -87,8 +87,8 @@ class LoadPatient extends Fixture implements DependentFixtureInterface
             $p->setZip($patient['zip']);
             $p->setTown($patient['town']);
             $p->setTel($patient['tel']);
-            $p->setCreatedAt(new \Datetime());
-            $p->setUpdatedAt(new \Datetime());
+            $p->setCreatedAt(new \DateTime('now'));
+            $p->setUpdatedAt(new \DateTime('now'));
             $p->setVisitTime($this->getReference(LoadVisitTime::VISIT_TIME_REFERENCE));
             $p->setSector($this->getReference(LoadSector::SECTOR_REFERENCE));
             $p->setTypeCare($this->getReference(LoadTypeCare::TYPE_CARE_REFERENCE));

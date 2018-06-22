@@ -76,7 +76,7 @@ class User extends BaseUser
     public function __construct()
     {
         parent::__construct();
-        $this->createdAt   = new \Datetime();
+        $this->createdAt   = new \DateTime('now');
         $this->roles = array('ROLE_USER');
     }
 

@@ -60,7 +60,7 @@ class EventRepository extends EntityRepository
 
         $arraySize = count($arrayEvents);
 
-        $date = new \Datetime('now');
+        $date = new \DateTime('now');
 
         for ($i=0; $i < $arraySize; $i++) {
             $event = new Event();
@@ -72,6 +72,7 @@ class EventRepository extends EntityRepository
             $event->setVisitTime($entities['visit_time']);
             $event->setLinked(1);
             $event->setAutoGenerate(1);
+            $event->setNurse($entities['user']);
             $this->_em->persist($event);
         }
 
@@ -91,7 +92,7 @@ class EventRepository extends EntityRepository
 
         $arraySize = count($arrayEvents);
 
-        $date = new \Datetime('now');
+        $date = new \DateTime('now');
 
         for ($i=0; $i < $arraySize; $i++) {
             $event = new Event();
@@ -101,8 +102,7 @@ class EventRepository extends EntityRepository
             $event->setPatient($entities['patient']);
             $event->setUser($entities['user']);
             $event->setVisitTime($entities['visit_time']);
-            $event->setVisitTime($entities['visit_time']);
-
+            $event->setNurse($entities['user']);
             $this->_em->persist($event);
         }
 
@@ -124,7 +124,7 @@ class EventRepository extends EntityRepository
 
         if ($this->lastWeekOfYear == 1) {
             $this->lastWeekOfYear = (int) date('W', strtotime($this->firstYearForm . '-12-24'));
-            $this->lastDayOfLastWeekOfTheYear = new \DateTime();
+            $this->lastDayOfLastWeekOfTheYear = new \DateTime('now');
             $this->lastDayOfLastWeekOfTheYear->setISODate($this->firstYearForm, $this->lastWeekOfYear)->modify('+6 day');
             if (strtotime($this->firstYearForm . '-12-'.($this->lastDayOfLastWeekOfTheYear->format('d')+1)) <= $startingDate->getTimestamp() &&
                 $startingDate->getTimestamp() <= strtotime($this->firstYearForm . '-12-31')
@@ -133,7 +133,7 @@ class EventRepository extends EntityRepository
             }
         }
 
-        $this->weekStart = new \DateTime();
+        $this->weekStart = new \DateTime('now');
 
         if ($frequency->getTime() === 'day') {
             $result = $this->setResultPerDay($frequency->getNbRepetition());
@@ -280,15 +280,28 @@ class EventRepository extends EntityRepository
         return $result;
     }
 
+    /**
+     *
+     */
     protected function shiftStartDate()
     {
-        if ($this->dayOfWeekStartingDate == 0 || $this->dayOfWeekStartingDate == 6) {
+        if ($this->dayOfWeekStartingDate == 0 || $this->dayOfWeekStartingDate == 6)
+        {
             $this->firstWeekForm++;
             $this->dayOfWeekStartingDate = 1;
         }
     }
 
-    public function insertEvent(User $user, \DateTime $startingDate, \DateTime $endDate, Array $filter){
+    /**
+     * @param User $user
+     * @param \DateTime $startingDate
+     * @param \DateTime $endDate
+     * @param array $filter
+     * @return Event
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
+    public function insertEvent(User $user, \DateTime $startingDate, \DateTime $endDate, Array $filter)
+    {
 
         $visitTimeStamp = $endDate->getTimestamp()-$startingDate->getTimestamp();
 
@@ -303,12 +316,13 @@ class EventRepository extends EntityRepository
         $event = new Event();
         $event->setTitle($patient->getName().' '.$patient->getSurname());
         $event->setVisitDate($startingDate);
-        $event->setCreatedAt(new \DateTime('now', new \DateTimeZone('America/Montreal')));
+        $event->setCreatedAt(new \DateTime('now'));
         $event->setPatient($patient);
         $event->setUser($filter['userCurrent']);
         $event->setVisitTime($visitTime[0]);
         $event->setLinked(1);
         $event->setAutoGenerate(0);
+        $event->setNurse($filter['userCurrent']);
         $this->_em->persist($event);
         $this->_em->flush();
         $this->_em->clear();
@@ -316,16 +330,80 @@ class EventRepository extends EntityRepository
         return $event;
     }
 
-    public function updateEvent(){
+    /**
+     * @param User $user
+     * @param \DateTime $startingDate
+     * @param \DateTime $endDate
+     * @param array $filter
+     * @return null|object
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
+    public function updateEvent(User $user, \DateTime $startingDate, \DateTime $endDate, Array $filter)
+    {
 
+        $event = $this->_em->getRepository('SolustatTimeSheetBundle:Event')->find($filter['id']);
+        $visitTimeStamp = $endDate->getTimestamp() - $startingDate->getTimestamp();
+
+        if($visitTimeStamp >= self::CARE_1H_TIMESTAMP) {
+            $visitTime = $this->_em->getRepository('SolustatTimeSheetBundle:VisitTime')->findByName('Soins durée 1h');
+        } else {
+            $visitTime = $this->_em->getRepository('SolustatTimeSheetBundle:VisitTime')->findByName('Soins normaux');
+        }
+
+        $event->setVisitDate($startingDate);
+        $event->setUpdatedAt(new \DateTime('now'));
+        $event->setVisitTime($visitTime[0]);
+        $event->setAutoGenerate(0);
+        $event->setLinked(1);
+        $this->_em->persist($event);
+        $this->_em->flush();
+        $this->_em->clear();
+
+        return $event;
     }
 
-    public function deleteEvent($id){
+    /**
+     * @param $id
+     * @return int
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
+    public function deleteEvent($id)
+    {
         $event = $this->_em->getRepository('SolustatTimeSheetBundle:Event')->find($id);
         $this->_em->remove($event);
         $this->_em->flush();
+        $this->_em->clear();
 
         return 1;
+    }
+
+    /**
+     * @param $id
+     * @return int
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
+    public function unlinkEvent($id)
+    {
+        $event = $this->_em->getRepository('SolustatTimeSheetBundle:Event')->find($id);
+        $event->setLinked(0);
+        $this->_em->persist($event);
+        $this->_em->flush();
+        $this->_em->clear();
+
+        return 1;
+    }
+
+
+    public function getEventFree()
+    {
+        $events = $this->_em->getRepository('SolustatTimeSheetBundle:Event')
+            ->createQueryBuilder('e')
+            ->where('e.linked >= :linked')
+            ->setParameter('linked',0)
+            ->getQuery()
+            ->execute();
+
+        return $events;
     }
 
 }

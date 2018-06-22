@@ -30,13 +30,13 @@ class CalendarEvent extends EventDispatcher
     protected $events = [];
 
     /**
-     * @param \Datetime $star
+     * @param \Datetime $start
      * @param \Datetime $end
      * @param array $filters
      */
-    public function __construct(\Datetime $star, \Datetime $end, array $filters)
+    public function __construct(\Datetime $start, \Datetime $end, array $filters)
     {
-        $this->start = $star;
+        $this->start = $start;
         $this->end = $end;
         $this->filters = $filters;
     }

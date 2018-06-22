@@ -67,9 +67,15 @@ class Event
      */
     private $linked;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="Solustat\TimeSheetBundle\Entity\User", inversedBy="events", cascade={"persist"})
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private $nurse;
+
     public function __construct()
     {
-        $this->createdAt   = new \Datetime();
+        $this->createdAt   = new \DateTime('now');
     }
 
     /**
@@ -77,7 +83,7 @@ class Event
      */
     public function updateDate()
     {
-        $this->setUpdatedAt(new \Datetime());
+        $this->setUpdatedAt(new \DateTime('now'));
     }
 
     /**
@@ -304,5 +310,29 @@ class Event
     public function getLinked()
     {
         return $this->linked;
+    }
+
+    /**
+     * Set nurse
+     *
+     * @param \Solustat\TimeSheetBundle\Entity\User $nurse
+     *
+     * @return Event
+     */
+    public function setNurse(\Solustat\TimeSheetBundle\Entity\User $nurse)
+    {
+        $this->nurse = $nurse;
+
+        return $this;
+    }
+
+    /**
+     * Get nurse
+     *
+     * @return \Solustat\TimeSheetBundle\Entity\User
+     */
+    public function getNurse()
+    {
+        return $this->nurse;
     }
 }

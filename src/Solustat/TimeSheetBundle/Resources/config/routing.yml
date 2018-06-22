@@ -90,3 +90,7 @@ solustat_full_calendar_load:
     path:     /full-calendar/load
     defaults:
         _controller: SolustatTimeSheetBundle:Calendar:load
+
+solustat_time_sheet_eventfree_list:
+    path:      /platform/event/list
+    defaults: { _controller: SolustatTimeSheetBundle:EventFree:list }

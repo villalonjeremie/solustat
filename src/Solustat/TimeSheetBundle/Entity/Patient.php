@@ -103,7 +103,7 @@ class Patient
 
     public function __construct()
     {
-        $this->createdAt   = new \Datetime();
+        $this->createdAt   = new \DateTime('now');
 
     }
 
@@ -112,7 +112,7 @@ class Patient
      */
     public function updateDate(LifecycleEventArgs $args)
     {
-        $this->setUpdatedAt(new \Datetime());
+        $this->setUpdatedAt(new \DateTime('now'));
     }
 
     /**

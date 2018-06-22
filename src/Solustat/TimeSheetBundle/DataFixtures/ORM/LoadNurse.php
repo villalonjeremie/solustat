@@ -36,7 +36,7 @@ class LoadNurse extends Fixture implements DependentFixtureInterface
             $n->setSecurityLevel($nurse['security_level']);
             $n->setTelWork($nurse['tel_work']);
             $n->setTelMobile($nurse['tel_mobile']);
-            $n->setUpdatedAt(new \Datetime());
+            $n->setUpdatedAt(new \DateTime('now'));
             $n->setSector($this->getReference(LoadSector::SECTOR_REFERENCE));
             $manager->persist($n);
         }
