@@ -45,12 +45,36 @@ class EventRepository extends EntityRepository
         5 => [1, 2, 3, 4, 5]
     ];
 
+    /**
+     * @var
+     */
     protected $firstWeekForm;
+
+    /**
+     * @var
+     */
     protected $firstYearForm;
+
+    /**
+     * @var
+     */
     protected $lastWeekOfYear;
+
+    /**
+     * @var
+     */
     protected $dayOfWeekStartingDate;
+
+    /**
+     * @var
+     */
     protected $lastDayOfLastWeekOfTheYear;
+
+    /**
+     * @var
+     */
     protected $weekStart;
+
 
     public function insertNewBulkEvents(array $entities)
     {
@@ -84,6 +108,9 @@ class EventRepository extends EntityRepository
         }
     }
 
+    /**
+     * @param array $entities
+     */
     public function insertUpdateBulkEvents(array $entities)
     {
         $patient = $entities['patient'];
@@ -114,6 +141,11 @@ class EventRepository extends EntityRepository
         }
     }
 
+    /**
+     * @param \DateTime $startingDate
+     * @param \Solustat\TimeSheetBundle\Entity\Frequency $frequency
+     * @return array
+     */
     private function getArrayEvents(\DateTime $startingDate, \Solustat\TimeSheetBundle\Entity\Frequency $frequency)
     {
         $result = [];
@@ -280,9 +312,6 @@ class EventRepository extends EntityRepository
         return $result;
     }
 
-    /**
-     *
-     */
     protected function shiftStartDate()
     {
         if ($this->dayOfWeekStartingDate == 0 || $this->dayOfWeekStartingDate == 6)
@@ -390,16 +419,35 @@ class EventRepository extends EntityRepository
         $this->_em->flush();
         $this->_em->clear();
 
-        return 1;
+        return true;
     }
 
+    /**
+     * @param $id
+     * @return bool
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
+    public function linkEvent($id, $user)
+    {
+        $event = $this->_em->getRepository('SolustatTimeSheetBundle:Event')->find($id);
+        $event->setLinked(1);
+        $event->setUser($user);
+        $this->_em->persist($event);
+        $this->_em->flush();
+        $this->_em->clear();
 
+        return true;
+    }
+
+    /**
+     * @return mixed
+     */
     public function getEventFree()
     {
         $events = $this->_em->getRepository('SolustatTimeSheetBundle:Event')
             ->createQueryBuilder('e')
-            ->where('e.linked >= :linked')
-            ->setParameter('linked',0)
+            ->where('e.linked = :linked')
+            ->setParameter('linked',false)
             ->getQuery()
             ->execute();
 

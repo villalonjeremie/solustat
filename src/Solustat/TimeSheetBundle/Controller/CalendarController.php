@@ -56,7 +56,7 @@ class CalendarController extends CalendarControllerBundle
 
             $response = new Response();
             $response->headers->set('Content-Type', 'application/json');
-            $response->setContent($content);
+            $response->setContent(1);
             $response->setStatusCode($status);
             return $response;
         }

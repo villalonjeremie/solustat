@@ -17,9 +17,9 @@
         {% for event in listEvents %}
             <li>
                 <a href="{{ path('solustat_time_sheet_patient_view', {'id': event.id}) }}">
-                    {{ event.title }} prévu le {{ event.visitDate }}
-                </a>
-                créé le {{ event.createdAt|date('d/m/Y') }} - sans assistance
+                    {{ event.title }} prévu le {{ event.visitDate|date('d/m/Y h:i:s') }}
+                </a> - sans assistance
+                <a href="{{ path('solustat_time_sheet_eventfree_link', {'id': event.id }) }}">Prendre ce patient</a>
             </li>
         {% else %}
             <li>Pas (encore !) de rendez vous sans infirmier</li>

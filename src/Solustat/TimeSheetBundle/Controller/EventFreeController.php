@@ -3,22 +3,12 @@
 namespace Solustat\TimeSheetBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
-use Solustat\TimeSheetBundle\Entity\Patient;
-use Solustat\TimeSheetBundle\Form\PatientType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
-use Symfony\Component\Form\Extension\Core\Type\FormType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 class EventFreeController extends Controller
 {
-    public function listAction($page)
+    public function listAction($page, Request $request)
     {
-
-
         if ($page < 1) {
             throw new NotFoundHttpException('Page "'.$page.'" inexistante.');
         }
@@ -33,7 +23,12 @@ class EventFreeController extends Controller
         $nbPages = ceil(count($listEvents) / $nbPerPage);
 
         if ($page > $nbPages) {
-            throw $this->createNotFoundException("La page ".$page." n'existe pas.");
+            $request->getSession()->getFlashBag()->add('notice', 'Plus d\'element');
+            return $this->render('SolustatTimeSheetBundle:EventFree:list.html.twig', array(
+                'listEvents'  => $listEvents,
+                'nbPages'     => 1,
+                'page'        => 1
+            ));
         }
 
         return $this->render('SolustatTimeSheetBundle:EventFree:list.html.twig', array(
@@ -41,5 +36,23 @@ class EventFreeController extends Controller
             'nbPages'     => $nbPages,
             'page'        => $page,
         ));
+    }
+
+    public function linkAction($id, Request $request)
+    {
+        $userCurrent = $this->container->get('security.token_storage')->getToken()->getUser();
+
+        $eventFree = $this->getDoctrine()
+            ->getManager()
+            ->getRepository('SolustatTimeSheetBundle:Event')
+            ->linkEvent($id,$userCurrent);
+
+        if($eventFree) {
+            $request->getSession()->getFlashBag()->add('notice', 'Ce patient a été lié à votre emploi de temps');
+        } else {
+            $request->getSession()->getFlashBag()->add('notice', 'Ce patient n\'a pas été lié');
+        }
+        return $this->redirectToRoute('solustat_time_sheet_eventfree_list', array('page' => 1));
+
     }
 }

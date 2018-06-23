@@ -66,10 +66,6 @@ solustat_time_sheet_nurse_delete:
     requirements:
         id: \d+
 
-solustat_time_sheet_bucket_list:
-    path:      /platform/bucket/list
-    defaults: { _controller: SolustatTimeSheetBundle:Bucket:list }
-
 solustat_time_sheet_nurse_day:
     path:      /platform/nurse/week
     defaults: { _controller: SolustatTimeSheetBundle:Nurse:day }
@@ -92,5 +88,11 @@ solustat_full_calendar_load:
         _controller: SolustatTimeSheetBundle:Calendar:load
 
 solustat_time_sheet_eventfree_list:
-    path:      /platform/event/list
+    path:      /platform/event/list/{page}
     defaults: { _controller: SolustatTimeSheetBundle:EventFree:list }
+
+solustat_time_sheet_eventfree_link:
+    path:      /platform/event/link/{id}
+    defaults: { _controller: SolustatTimeSheetBundle:EventFree:link }
+    requirements:
+        id: \d+
