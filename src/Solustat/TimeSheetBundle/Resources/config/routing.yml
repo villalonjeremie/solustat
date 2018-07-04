@@ -2,6 +2,10 @@ solustat_time_sheet_homepage:
     path:     /
     defaults: { _controller: SolustatTimeSheetBundle:Default:index }
 
+solustat_time_sheet_list_alert:
+    path:     /
+    defaults: { _controller: SolustatTimeSheetBundle:EventFree:listAlert }
+
 solustat_time_sheet_calendar:
     path:     /calendar
     defaults: { _controller: SolustatTimeSheetBundle:Calendar:view }

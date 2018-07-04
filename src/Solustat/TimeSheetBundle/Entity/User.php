@@ -55,6 +55,11 @@ class User extends BaseUser
     protected $updatedAt;
 
     /**
+     * @ORM\Column(name="date_time_set", type="text", nullable=true)
+     */
+    protected $dateTimeSet;
+
+    /**
      * @ORM\ManyToOne(targetEntity="Solustat\TimeSheetBundle\Entity\Sector", inversedBy="users")
      * @ORM\JoinColumn(nullable=false)
      */
@@ -342,5 +347,29 @@ class User extends BaseUser
     public function getPatients()
     {
         return $this->patients;
+    }
+
+    /**
+     * Set dateTimeSet
+     *
+     * @param string $dateTimeSet
+     *
+     * @return User
+     */
+    public function setDateTimeSet($dateTimeSet)
+    {
+        $this->dateTimeSet = $dateTimeSet;
+
+        return $this;
+    }
+
+    /**
+     * Get dateTimeSet
+     *
+     * @return string
+     */
+    public function getDateTimeSet()
+    {
+        return $this->dateTimeSet;
     }
 }

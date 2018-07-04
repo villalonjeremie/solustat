@@ -28,7 +28,7 @@ class AutoInsertListener
         $entities['user'] = $entities['patient']->getUser();
 
         $em->getRepository('SolustatTimeSheetBundle:Event')
-                    ->insertNewBulkEvents($entities);
+                    ->insertNewBulkEvents($entities['user'], $entities);
     }
 
     public function postUpdate(LifecycleEventArgs $args)
@@ -53,7 +53,7 @@ class AutoInsertListener
             $resultQuery = $queryToDelete->execute();
 
             if ($resultQuery){
-                $em->getRepository('SolustatTimeSheetBundle:Event')->insertUpdateBulkEvents($entities);
+                $em->getRepository('SolustatTimeSheetBundle:Event')->insertUpdateBulkEvents($entities['user'], $entities);
             } else {
                 return;
             }

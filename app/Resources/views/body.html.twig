@@ -37,17 +37,17 @@
             <h3>Menu</h3>
             <ul class="nav nav-pills nav-stacked">
 
-                {#<li><a href="{{ path('solustat_time_sheet_dashboard') }}">Tableau de bord</a></li>#}
+                <li><a href="{{ path('solustat_time_sheet_homepage') }}">Tableau de bord</a></li>
                 {#<li><a href="{{ path('solustat_time_sheet_nurse_myaccount') }}">Mon compte</a></li>#}
-                <li><a href="{{ path('solustat_time_sheet_eventfree_list', {'page': 1}) }}">Rendez-vous libre</a>
+                <li><a href="{{ path('solustat_time_sheet_eventfree_list', {'page': 1}) }}">Liste de Patient libre</a>
                 {#<li><a href="{{ path('solustat_time_sheet_nurse_add') }}">Ajouter un(e) emloyé(e)</a></li>#}
-                <li><a href="{{ path('solustat_time_sheet_patient_list', {'page': 1}) }}">Liste des patients</a></li>
-                <li><a href="{{ path('solustat_time_sheet_patient_add') }}">Ajouter un patient</a></li>
+                <li><a href="{{ path('solustat_time_sheet_patient_list', {'page': 1}) }}">Mes patients</a></li>
+                {#<li><a href="{{ path('solustat_time_sheet_patient_add') }}">Ajouter un patient</a></li>#}
                 {#<li><a href="{{ path('solustat_time_sheet_bucket_list') }}">Patients à voir</a></li>#}
                 <li><a href="{{ path('solustat_time_sheet_calendar') }}">Mon emploi du temps</a></li>
             </ul>
-            <h4>Patients libres</h4>
-            {#{{ render(controller("OCPlatformBundle:Patient:free", {'limit': 10})) }}#}
+            <h4>Patients libres urgents</h4>
+            {{ render(controller("SolustatTimeSheetBundle:EventFree:listAlerts", {'limit': 4})) }}
         </div>
         <div id="content" class="col-md-9">
             {% block content %}

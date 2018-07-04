@@ -45,6 +45,8 @@ class EventRepository extends EntityRepository
         5 => [1, 2, 3, 4, 5]
     ];
 
+    const HOUR_START_DAY = 8;
+
     /**
      * @var
      */
@@ -75,15 +77,88 @@ class EventRepository extends EntityRepository
      */
     protected $weekStart;
 
+    /**
+     * @var
+     */
+    protected $user;
 
-    public function insertNewBulkEvents(array $entities)
+    /**
+     * @param User $user
+     * @param array $entities
+     */
+    public function insertNewBulkEvents(User $user, array $entities)
     {
         $patient = $entities['patient'];
+        $this->setUser($user);
+
+
+        $allEvents = $this->getAllEventsPerUser($user);
+//        $newArray = [];
+//
+//        foreach($allEvents as &$event){
+//            $newArray[]['date'] = substr($event['visitDate']->date,0,11);
+//            $newArray[]['timestamp'] = substr($event['visitDate']->date,0,11);
+//        }
+
+
 
         $arrayEvents = $this->getArrayEvents($patient->getStartingDate(), $patient->getFrequency());
+        $dateTimeSetArray = [];
+
+        $dateTimeSet = $user->getDateTimeSet();
+
+        if ($dateTimeSet) {
+            $dateTimeSet = unserialize($dateTimeSet);
+        } else {
+            $dateTimeSet = [];
+        }
+
+        foreach($arrayEvents as $k=>$v) {
+            $timeStampVisit = $patient->getVisitTime()->getTimeStamp();
+            $startTimeStamp = self::HOUR_START_DAY * 3600;
+
+            if (isset($dateTimeSet[$v])) {
+                $sizeIntervals = count($dateTimeSet[$v]['interval']);
+                $i=0;
+
+                if ($sizeIntervals == 1) {
+                    list($start, $end) = preg_split("/-/", $dateTimeSet[$v]['interval'][0]);
+                    $dateTimeSet[$v]['interval'][] = $end.'-'.($end + $timeStampVisit);
+                    $dateTimeSet[$v]['countVisit']++;
+                } else {
+                    $flagDone = false;
+
+                    while ($i < $sizeIntervals-1)
+                    {
+                        list($start, $end) = preg_split("/-/", $dateTimeSet[$v]['interval'][$i]);
+                        list($startNext, $endNext) = preg_split("/-/", $dateTimeSet[$v]['interval'][$i+1]);
+
+                        if ($end != $startNext && (($startNext-$end) >= $timeStampVisit)) {
+                            $dateTimeSet[$v]['interval'][] = $end . '-' . ($end + $timeStampVisit);
+                            $dateTimeSet[$v]['countVisit']++;
+                            $flagDone = true;
+                            break;
+                        }
+                        $i++;
+                    }
+
+                    if (!$flagDone){
+                        $dateTimeSet[$v]['interval'][] = $endNext.'-'.($endNext + $timeStampVisit);
+                        $dateTimeSet[$v]['countVisit']++;
+                    }
+                }
+            } else {
+                $interval = $startTimeStamp.'-'.($startTimeStamp + $timeStampVisit);
+                $dateTimeSet[$v]['interval'][] = $interval;
+                $dateTimeSet[$v]['countVisit'] = 1;
+            }
+        }
+
+        $dateTimeSetString = serialize($dateTimeSet);
+        $user->setDateTimeSet($dateTimeSetString);
+        $this->_em->persist($user);
 
         $arraySize = count($arrayEvents);
-
         $date = new \DateTime('now');
 
         for ($i=0; $i < $arraySize; $i++) {
@@ -109,13 +184,32 @@ class EventRepository extends EntityRepository
     }
 
     /**
+     * @param User $user
      * @param array $entities
+     * @throws \Doctrine\ORM\OptimisticLockException
      */
-    public function insertUpdateBulkEvents(array $entities)
+    public function insertUpdateBulkEvents(User $user, array $entities)
     {
         $patient = $entities['patient'];
 
         $arrayEvents = $this->getArrayEvents($patient->getStartingDate(), $patient->getFrequency());
+
+        $newsarray = [];
+
+
+        foreach($arrayEvents as $k=>$v) {
+
+            $newsArray[$v] = [
+                '1' => [4,["123456789-123456790","234567899-234567900","345678999-345679000"],[123,1234,1234567]]
+            ];
+
+        }
+
+        $user->setDateTimeSet($newsArray);
+        $this->_em->persist($user);
+        $this->_em->flush();
+        $this->_em->clear();
+
 
         $arraySize = count($arrayEvents);
 
@@ -144,6 +238,7 @@ class EventRepository extends EntityRepository
     /**
      * @param \DateTime $startingDate
      * @param \Solustat\TimeSheetBundle\Entity\Frequency $frequency
+     * @param User $user
      * @return array
      */
     private function getArrayEvents(\DateTime $startingDate, \Solustat\TimeSheetBundle\Entity\Frequency $frequency)
@@ -369,7 +464,6 @@ class EventRepository extends EntityRepository
      */
     public function updateEvent(User $user, \DateTime $startingDate, \DateTime $endDate, Array $filter)
     {
-
         $event = $this->_em->getRepository('SolustatTimeSheetBundle:Event')->find($filter['id']);
         $visitTimeStamp = $endDate->getTimestamp() - $startingDate->getTimestamp();
 
@@ -447,11 +541,60 @@ class EventRepository extends EntityRepository
         $events = $this->_em->getRepository('SolustatTimeSheetBundle:Event')
             ->createQueryBuilder('e')
             ->where('e.linked = :linked')
-            ->setParameter('linked',false)
+            ->setParameter('linked',0)
             ->getQuery()
             ->execute();
 
         return $events;
+    }
+
+    /**
+     * @param int $limit
+     * @param string $filter
+     * @return mixed
+     */
+    public function getListAlerts($limit, $filter)
+    {
+        $events = $this->_em->getRepository('SolustatTimeSheetBundle:Event')
+            ->createQueryBuilder('e')
+            ->where('e.linked = :linked')
+            ->setParameter('linked', 0)
+            ->getQuery()
+            ->execute();
+
+        return $events;
+    }
+
+    /**
+     * @param User $user
+     * @return mixed
+     */
+    public function getAllEventsPerUser(User $user) {
+        $events = $this->_em->getRepository('SolustatTimeSheetBundle:Event')
+            ->createQueryBuilder('e')
+            ->select('e.visitDate')
+            ->where('e.user = :user')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getArrayResult();
+
+        return $events;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
+
+    /**
+     * @param User $user
+     */
+    public function setUser(User $user)
+    {
+        $this->user = $user;
     }
 
 }

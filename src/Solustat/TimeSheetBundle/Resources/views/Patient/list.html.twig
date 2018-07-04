@@ -3,9 +3,9 @@
 {% block title %}
     Liste des patients - {{ parent() }}
 {% endblock %}
-
 {% block solustattimesheet_body %}
     <h2>Liste des patients</h2>
+    <a href="{{ path('solustat_time_sheet_patient_add') }}">Ajouter un patient</a>
     {% if app.session.flashBag.has('notice') %}
         <div class="alert alert-success">
             {% for msg in app.session.flashBag.get('notice') %}

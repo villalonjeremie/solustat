@@ -55,4 +55,16 @@ class EventFreeController extends Controller
         return $this->redirectToRoute('solustat_time_sheet_eventfree_list', array('page' => 1));
 
     }
+
+    public function listAlertsAction($limit = 4, $filter = 'today')
+    {
+        $listAlerts = $this->getDoctrine()
+            ->getManager()
+            ->getRepository('SolustatTimeSheetBundle:Event')
+            ->getListAlerts($limit, $filter);
+
+        return $this->render('SolustatTimeSheetBundle:EventFree:listalerts.html.twig', array(
+            'listAlerts'  => $listAlerts
+        ));
+    }
 }
