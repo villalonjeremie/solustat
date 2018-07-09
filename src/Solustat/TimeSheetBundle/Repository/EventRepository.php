@@ -413,7 +413,7 @@ class EventRepository extends EntityRepository
         $dateTimeSet = $user->getDateTimeSet();
         $startTimeStamp = $startDate->getTimestamp()-strtotime($arrayEvents[0]);
 
-        $dateTimeSet = $this->deleteDateTimeByPatientIdAndTime($dateTimeSet, $arrayEvents , $visitTimeStamp, $startTimeStamp, $filter['patientId']);
+        $dateTimeSet = $this->deleteDateTimeByPatientIdAndTime($dateTimeSet, $arrayEvents , $visitTimeStamp, $event);
         $user->setDateTimeSet(serialize($this->updateDateTimeSet($dateTimeSet, $arrayEvents, $visitTimeStamp, $startTimeStamp, $filter['patientId'])));
         $this->_em->persist($user);
 
@@ -676,18 +676,27 @@ class EventRepository extends EntityRepository
         return $dateTimeSet;
     }
 
-    private function deleteDateTimeByPatientIdAndTime($dateTimeSetSerialize, $arrayEvent, $visitTimeStamp, $startTimeStamp, $patientId) {
+    /**
+     * @param $dateTimeSetSerialize
+     * @param $arrayEvents
+     * @param $visitTimeStamp
+     * @param $patientId
+     * @param $eventId
+     * @return array|mixed
+     */
+    private function deleteDateTimeByPatientIdAndTime($dateTimeSetSerialize, $arrayEvents, $visitTimeStamp, $event) {
         if ($dateTimeSetSerialize) {
             $dateTimeSet = unserialize($dateTimeSetSerialize);
         } else {
             $dateTimeSet = [];
         }
 
-        foreach ($dateTimeSet[$arrayEvent[0]] as $k=>$v){
-            $explode = explode('/', $v);
+        $event = $this->_em->getRepository('SolustatTimeSheetBundle:Event')->find($event->getId());
+        $startTimeStamp = $event->getVisitDate()->getTimeStamp()-strtotime($arrayEvents[0]);
 
-            if ($explode[1] == $patientId && $startTimeStamp.'-'.($startTimeStamp + $visitTimeStamp) == $explode[0]) {
-                array_splice($dateTimeSet[$arrayEvent[0]], $k,1);
+        foreach ($dateTimeSet[$arrayEvents[0]] as $k=>$v){
+            if ($startTimeStamp.'-'.($startTimeStamp + $visitTimeStamp).'/'.$event->getPatient()->getId() == $v) {
+                array_splice($dateTimeSet[$arrayEvents[0]], $k,1);
             }
         }
 
