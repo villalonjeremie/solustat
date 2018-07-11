@@ -68,6 +68,16 @@ class Event
     private $linked;
 
     /**
+     * @ORM\Column(name="date_key", type="string", nullable=true)
+     */
+    private $dateKey;
+
+    /**
+     * @ORM\Column(name="interval_visit_time", type="string", nullable=true)
+     */
+    private $intervalVisitTime;
+
+    /**
      * @ORM\ManyToOne(targetEntity="Solustat\TimeSheetBundle\Entity\User", inversedBy="events", cascade={"persist"})
      * @ORM\JoinColumn(nullable=true)
      */
@@ -334,5 +344,53 @@ class Event
     public function getNurse()
     {
         return $this->nurse;
+    }
+
+    /**
+     * Set dateKey
+     *
+     * @param string $dateKey
+     *
+     * @return Event
+     */
+    public function setDateKey($dateKey)
+    {
+        $this->dateKey = $dateKey;
+
+        return $this;
+    }
+
+    /**
+     * Get dateKey
+     *
+     * @return string
+     */
+    public function getDateKey()
+    {
+        return $this->dateKey;
+    }
+
+    /**
+     * Set intervalVisitTime
+     *
+     * @param string $intervalVisitTime
+     *
+     * @return Event
+     */
+    public function setIntervalVisitTime($intervalVisitTime)
+    {
+        $this->intervalVisitTime = $intervalVisitTime;
+
+        return $this;
+    }
+
+    /**
+     * Get intervalVisitTime
+     *
+     * @return string
+     */
+    public function getIntervalVisitTime()
+    {
+        return $this->intervalVisitTime;
     }
 }

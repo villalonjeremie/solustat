@@ -91,20 +91,77 @@ class EventRepository extends EntityRepository
         $patient = $entities['patient'];
         $this->setUser($user);
         $arrayEvents = $this->getArrayEvents($patient->getStartingDate(), $patient->getFrequency());
-        $dateTimeSet = $user->getDateTimeSet();
-        $timeStampVisit = $patient->getVisitTime()->getTimeStamp();
-        $startTimeStamp = self::HOUR_START_DAY * 3600;
-        $dateTimeSet = $this->updateDateTimeSetBulk($dateTimeSet, $arrayEvents, $timeStampVisit, $startTimeStamp, $patient->getId());
-        $user->setDateTimeSet(serialize($dateTimeSet));
-        $this->_em->persist($user);
+
+        /****************************************************************/
+//        $dateTimeSet = $user->getDateTimeSet();
+//        $timeStampVisit = $patient->getVisitTime()->getTimeStamp();
+//        $startTimeStamp = self::HOUR_START_DAY * 3600;
+//        $dateTimeSet = $this->updateDateTimeSetBulk($dateTimeSet, $arrayEvents, $timeStampVisit, $startTimeStamp, $patient->getId());
+//        $user->setDateTimeSet(serialize($dateTimeSet));
+//        $this->_em->persist($user);
+        /****************************************************************/
 
         $arraySize = count($arrayEvents);
         $date = new \DateTime('now');
 
+        $starttime = microtime(true);
+
+        $startVisitTimeStamp = self::HOUR_START_DAY * 3600;
+        $timeStampVisit = $entities['visit_time']->getTimeStamp();
+
         for ($i=0; $i < $arraySize; $i++) {
+            $resultTime = [];
+            $result = $this->getEventByTimeUser($user,$arrayEvents[$i]);
+
+            if (empty($result)) {
+                $interval = $startVisitTimeStamp.'-'.($startVisitTimeStamp + $timeStampVisit);
+                $time = $startVisitTimeStamp;
+            } else {
+                foreach ($result as $ev) {
+                    $resultTime[] = $ev['intervalVisitTime'];
+                }
+
+                $sizeIntervals = count($resultTime);
+
+                if ($sizeIntervals == 0) {
+                    $interval = $startVisitTimeStamp . '-' . ($startVisitTimeStamp + $timeStampVisit);
+                    $time = $startVisitTimeStamp;
+                }
+
+                if ($sizeIntervals == 1) {
+                    list($start, $end) = preg_split("/-/", $resultTime[0]);
+                    $interval = $end . '-' . ($end + $timeStampVisit);
+                    $time = $end;
+                }
+
+                if ($sizeIntervals > 1) {
+                    $flagDone = false;
+
+                    while ($i < $sizeIntervals - 1) {
+                        list($start, $end) = preg_split("/-/", $resultTime[$i]);
+                        list($startNext, $endNext) = preg_split("/-/", $resultTime[$i+1]);
+
+                        if ($end != $startNext && (($startNext - $end) >= $timeStampVisit)) {
+                            $interval = $end . '-' . ($end + $timeStampVisit);
+                            $time = $end;
+                            $flagDone = true;
+                            break;
+                        }
+                        $i++;
+                    }
+
+                    if (!$flagDone) {
+                        $interval = $endNext . '-' . ($endNext + $timeStampVisit);
+                        $time = $endNext;
+                    }
+                }
+            }
+
+            $datetime = date('Y-m-d H:i:s', strtotime($arrayEvents[$i]) + $time);
+
             $event = new Event();
             $event->setTitle($patient->getName().' '.$patient->getSurname());
-            $event->setVisitDate(new \Datetime($arrayEvents[$i]));
+            $event->setVisitDate(new \Datetime($datetime));
             $event->setCreatedAt($date);
             $event->setPatient($entities['patient']);
             $event->setUser($entities['user']);
@@ -112,12 +169,16 @@ class EventRepository extends EntityRepository
             $event->setLinked(1);
             $event->setAutoGenerate(1);
             $event->setNurse($entities['user']);
+            $event->setDateKey($arrayEvents[$i]);
+            $event->setIntervalVisitTime($interval);
             $this->_em->persist($event);
         }
 
         try {
             $this->_em->flush();
             $this->_em->clear();
+            $endtime = microtime(true);
+            $duration = $endtime - $starttime;
         } catch (ORMException $e) {
             throw new NoSuchMetadataException($e);
         }
@@ -133,13 +194,14 @@ class EventRepository extends EntityRepository
         $this->setUser($user);
         $arrayEvents = $this->getArrayEvents($patient->getStartingDate(), $patient->getFrequency());
 
-        $dateTimeSet = $this->getUser()->getDateTimeSet();
-        $dateTimeSetUpdated = serialize($this->deleteDateTimeSetByPatientId($dateTimeSet, $patient->getId()));
-
-        $timeStampVisit = $patient->getVisitTime()->getTimeStamp();
-        $startTimeStamp = self::HOUR_START_DAY * 3600;
-        $user->setDateTimeSet(serialize($this->updateDateTimeSetBulk($dateTimeSetUpdated, $arrayEvents, $timeStampVisit, $startTimeStamp, $patient->getId())));
-        $this->_em->persist($user);
+        /****************************************************************/
+//        $dateTimeSet = $this->getUser()->getDateTimeSet();
+//        $dateTimeSetUpdated = serialize($this->deleteDateTimeSetByPatientId($dateTimeSet, $patient->getId()));
+//        $timeStampVisit = $patient->getVisitTime()->getTimeStamp();
+//        $startTimeStamp = self::HOUR_START_DAY * 3600;
+//        $user->setDateTimeSet(serialize($this->updateDateTimeSetBulk($dateTimeSetUpdated, $arrayEvents, $timeStampVisit, $startTimeStamp, $patient->getId())));
+//        $this->_em->persist($user);
+        /****************************************************************/
 
         $arraySize = count($arrayEvents);
         $date = new \DateTime('now');
@@ -366,11 +428,13 @@ class EventRepository extends EntityRepository
 
         $patient = $this->_em->getRepository('SolustatTimeSheetBundle:Patient')->find($filter['patientId']);
 
-        $arrayEvents[0] = $startDate->format('Y-m-d');
-        $dateTimeSet = $user->getDateTimeSet();
-        $startTimeStamp = $startDate->getTimestamp()-strtotime($arrayEvents[0]);
-        $user->setDateTimeSet(serialize($this->updateDateTimeSet($dateTimeSet, $arrayEvents, $visitTimeStamp, $startTimeStamp, $patient->getId())));
-        $this->_em->persist($user);
+        /****************************************************************/
+//        $arrayEvents[0] = $startDate->format('Y-m-d');
+//        $dateTimeSet = $user->getDateTimeSet();
+//        $startTimeStamp = $startDate->getTimestamp()-strtotime($arrayEvents[0]);
+//        $user->setDateTimeSet(serialize($this->updateDateTimeSet($dateTimeSet, $arrayEvents, $visitTimeStamp, $startTimeStamp, $patient->getId())));
+//        $this->_em->persist($user);
+        /****************************************************************/
 
         $event = new Event();
         $event->setTitle($patient->getName().' '.$patient->getSurname());
@@ -408,14 +472,15 @@ class EventRepository extends EntityRepository
             $visitTime = $this->_em->getRepository('SolustatTimeSheetBundle:VisitTime')->findByName('Soins normaux');
         }
 
+        /****************************************************************/
+//        $arrayEvents[0] = $startDate->format('Y-m-d');
+//        $dateTimeSet = $user->getDateTimeSet();
+//        $startTimeStamp = $startDate->getTimestamp()-strtotime($arrayEvents[0]);
+//        $dateTimeSet = $this->deleteDateTimeByPatientIdAndTime($dateTimeSet, $arrayEvents , $visitTimeStamp, $event);
+//        $user->setDateTimeSet(serialize($this->updateDateTimeSet($dateTimeSet, $arrayEvents, $visitTimeStamp, $startTimeStamp, $filter['patientId'])));
+//        $this->_em->persist($user);
+        /****************************************************************/
 
-        $arrayEvents[0] = $startDate->format('Y-m-d');
-        $dateTimeSet = $user->getDateTimeSet();
-        $startTimeStamp = $startDate->getTimestamp()-strtotime($arrayEvents[0]);
-
-        $dateTimeSet = $this->deleteDateTimeByPatientIdAndTime($dateTimeSet, $arrayEvents , $visitTimeStamp, $event);
-        $user->setDateTimeSet(serialize($this->updateDateTimeSet($dateTimeSet, $arrayEvents, $visitTimeStamp, $startTimeStamp, $filter['patientId'])));
-        $this->_em->persist($user);
 
         $event->setVisitDate($startDate);
         $event->setUpdatedAt(new \DateTime('now'));
@@ -430,13 +495,20 @@ class EventRepository extends EntityRepository
     }
 
     /**
-     * @param $id
+     * @param $filters
      * @return int
      * @throws \Doctrine\ORM\OptimisticLockException
      */
-    public function deleteEvent($id)
+    public function deleteEvent($filters)
     {
-        $event = $this->_em->getRepository('SolustatTimeSheetBundle:Event')->find($id);
+        $event = $this->_em->getRepository('SolustatTimeSheetBundle:Event')->find($filters['id']);
+
+        /****************************************************************/
+//        $arrayEvents[0] = $event->getVisitDate()->format('Y-m-d');
+//        $dateTimeSet = $filters['userCurrent']->getDateTimeSet();
+//        $dateTimeSet = $this->deleteDateTimeByPatientIdAndTime($dateTimeSet, $arrayEvents , $event->getVisitTime()->getTimeStamp(), $event);
+        /****************************************************************/
+
         $this->_em->remove($event);
         $this->_em->flush();
         $this->_em->clear();
@@ -516,9 +588,35 @@ class EventRepository extends EntityRepository
     public function getAllEventsPerUser(User $user) {
         $events = $this->_em->getRepository('SolustatTimeSheetBundle:Event')
             ->createQueryBuilder('e')
-            ->select('e.visitDate')
+            ->select(['e.dateKey','e.intervalVisitTime'])
             ->where('e.user = :user')
             ->setParameter('user', $user)
+            ->getQuery()
+            ->getArrayResult();
+
+        return $events;
+    }
+
+    /**
+     * @param User $user
+     * @param $time
+     * @return array
+     */
+    public function getEventByTimeUser(User $user, $time) {
+
+        $timeStart = new \DateTime($time.' 0:00:00');
+        $timeEnd = new \DateTime($time.' 23:59:59');
+
+
+        $events = $this->_em->getRepository('SolustatTimeSheetBundle:Event')
+            ->createQueryBuilder('e')
+            ->select(['e.dateKey','e.intervalVisitTime'])
+            ->where('e.user = :user')
+            ->andWhere('e.visitDate >= :timeStart')
+            ->andWhere('e.visitDate < :timeEnd')
+            ->setParameter('user', $user)
+            ->setParameter('timeStart', $timeStart)
+            ->setParameter('timeEnd', $timeEnd)
             ->getQuery()
             ->getArrayResult();
 
@@ -599,6 +697,14 @@ class EventRepository extends EntityRepository
         return $dateTimeSet;
     }
 
+    /**
+     * @param $dateTimeSetSerialize
+     * @param $arrayEvents
+     * @param $timeStampVisit
+     * @param $startTimeStamp
+     * @param $patientId
+     * @return array|mixed
+     */
     private function updateDateTimeSet($dateTimeSetSerialize, $arrayEvents, $timeStampVisit, $startTimeStamp, $patientId)
     {
         if ($dateTimeSetSerialize) {
@@ -657,6 +763,11 @@ class EventRepository extends EntityRepository
         return $dateTimeSet;
     }
 
+    /**
+     * @param $dateTimeSetSerialize
+     * @param $patientId
+     * @return array|mixed
+     */
     private function deleteDateTimeSetByPatientId($dateTimeSetSerialize, $patientId) {
         if ($dateTimeSetSerialize) {
             $dateTimeSet = unserialize($dateTimeSetSerialize);
@@ -680,8 +791,7 @@ class EventRepository extends EntityRepository
      * @param $dateTimeSetSerialize
      * @param $arrayEvents
      * @param $visitTimeStamp
-     * @param $patientId
-     * @param $eventId
+     * @param $event
      * @return array|mixed
      */
     private function deleteDateTimeByPatientIdAndTime($dateTimeSetSerialize, $arrayEvents, $visitTimeStamp, $event) {

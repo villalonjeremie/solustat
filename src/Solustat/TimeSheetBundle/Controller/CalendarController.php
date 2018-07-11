@@ -66,7 +66,7 @@ class CalendarController extends CalendarControllerBundle
                 $content = $this->getDoctrine()
                     ->getManager()
                     ->getRepository('SolustatTimeSheetBundle:Event')
-                    ->deleteEvent($request->get('id'));
+                    ->deleteEvent($filters);
 
                 $status = empty($content) ? Response::HTTP_NO_CONTENT : Response::HTTP_OK;
 

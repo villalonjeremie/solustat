@@ -89,7 +89,7 @@ $(document).ready(function(){
            var eventID = $('#eventID').val();
            $.ajax({
                url: '/app_dev.php/full-calendar/load',
-               data: 'action=delete&id='+eventID,
+               data: 'action=delete&id='+eventID+'&start='+moment(event.start).format(),
                type: "POST",
                success: function(json) {
                    if(json == 1)
