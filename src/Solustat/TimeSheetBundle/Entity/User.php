@@ -55,9 +55,9 @@ class User extends BaseUser
     protected $updatedAt;
 
     /**
-     * @ORM\Column(name="date_time_set", type="text", nullable=true)
+     * @ORM\Column(name="number_visit_set", type="text", nullable=true)
      */
-    protected $dateTimeSet;
+    protected $numberVisitSet;
 
     /**
      * @ORM\ManyToOne(targetEntity="Solustat\TimeSheetBundle\Entity\Sector", inversedBy="users")
@@ -350,26 +350,26 @@ class User extends BaseUser
     }
 
     /**
-     * Set dateTimeSet
+     * Set numberVisitSet
      *
-     * @param string $dateTimeSet
+     * @param string $numberVisitSet
      *
      * @return User
      */
-    public function setDateTimeSet($dateTimeSet)
+    public function setNumberVisitSet($numberVisitSet)
     {
-        $this->dateTimeSet = $dateTimeSet;
+        $this->numberVisitSet = $numberVisitSet;
 
         return $this;
     }
 
     /**
-     * Get dateTimeSet
+     * Get numberVisitSet
      *
      * @return string
      */
-    public function getDateTimeSet()
+    public function getNumberVisitSet()
     {
-        return $this->dateTimeSet;
+        return $this->numberVisitSet;
     }
 }

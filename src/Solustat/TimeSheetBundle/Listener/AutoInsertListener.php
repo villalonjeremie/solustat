@@ -9,7 +9,6 @@ use Symfony\Component\HttpFoundation\Session\Session;
 
 class AutoInsertListener
 {
-
     public function postPersist(LifecycleEventArgs $args)
     {
         $em = $args->getEntityManager();
