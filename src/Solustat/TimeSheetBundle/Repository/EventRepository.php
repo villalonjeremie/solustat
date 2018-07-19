@@ -93,9 +93,11 @@ class EventRepository extends EntityRepository
 
         /****************************************************************/
         $numberVisitSet = $user->getNumberVisitSet();
-        $numberVisitSetUpdated = $this->updateVisitTimeSet($numberVisitSet, $arrayEvents, $patient->getId());
-        $user->setNumberVisitSet($numberVisitSetUpdated);
-        $this->_em->persist($user);
+        if ($numberVisitSet) {
+            $numberVisitSet = unserialize($numberVisitSet);
+        } else {
+            $numberVisitSet = [];
+        }
         /****************************************************************/
 
         $arraySize = count($arrayEvents);
@@ -109,6 +111,24 @@ class EventRepository extends EntityRepository
         $intervalToInserted = [];
 
         for ($i=0; $i < $arraySize; $i++) {
+
+            /****************************************************************/
+
+
+
+
+
+            $dateShifted = $this->shiftDate($arrayEvents[$i], $numberVisitSet);
+
+            $numberVisitSet[$dateShifted][] = $patient->getId();
+            sort($numberVisitSet);
+            $arrayEvents[$i] = $dateShifted;
+
+
+
+
+            /****************************************************************/
+
             $arrayFirst = [];
             $result = $this->getEventByTimeUser($user,$arrayEvents[$i]);
 
@@ -187,6 +207,12 @@ class EventRepository extends EntityRepository
             }
         }
 
+        /****************************************************************/
+        $numberVisitSet = serialize($numberVisitSet);
+        $user->setNumberVisitSet($numberVisitSet);
+        $this->_em->persist($user);
+        /****************************************************************/
+
         try {
             $this->_em->flush();
             $this->_em->clear();
@@ -208,10 +234,13 @@ class EventRepository extends EntityRepository
 
         /****************************************************************/
         $numberVisitSet = $user->getNumberVisitSet();
-        $numberVisitSetUpdated = $this->deleteVisitTimeBulk($numberVisitSet, $patient->getId());
-        $numberVisitSetUpdated = $this->updateVisitTimeSet($numberVisitSetUpdated, $arrayEvents, $patient->getId());
-        $user->setNumberVisitSet($numberVisitSetUpdated);
-        $this->_em->persist($user);
+        $numberVisitSet = $this->deleteVisitTimeBulk($numberVisitSet, $patient->getId());
+
+        if ($numberVisitSet) {
+            $numberVisitSet = unserialize($numberVisitSet);
+        } else {
+            $numberVisitSet = [];
+        }
         /****************************************************************/
 
         $arraySize = count($arrayEvents);
@@ -224,6 +253,18 @@ class EventRepository extends EntityRepository
         $intervalToInserted = [];
 
         for ($i=0; $i < $arraySize; $i++) {
+
+            /****************************************************************/
+
+            $dateShifted = $this->shiftDate($arrayEvents[$i], $numberVisitSet);
+
+            $numberVisitSet[$dateShifted][] = $patient->getId();
+            sort($numberVisitSet);
+            $arrayEvents[$i] = $dateShifted;
+
+
+            /****************************************************************/
+
             $arrayFirst = [];
             $result = $this->getEventByTimeUser($user,$arrayEvents[$i]);
 
@@ -302,6 +343,12 @@ class EventRepository extends EntityRepository
                 $intervalToInserted = [];
             }
         }
+
+        /****************************************************************/
+        $numberVisitSet = serialize($numberVisitSet);
+        $user->setNumberVisitSet($numberVisitSet);
+        $this->_em->persist($user);
+        /****************************************************************/
 
         try {
             $this->_em->flush();
@@ -529,6 +576,7 @@ class EventRepository extends EntityRepository
         $event->setLinked(1);
         $event->setAutoGenerate(0);
         $event->setNurse($filter['userCurrent']);
+        $event->setDateKey($startDate->format('Y-m-d'));
         $this->_em->persist($event);
         $this->_em->flush();
         $this->_em->clear();
@@ -569,6 +617,7 @@ class EventRepository extends EntityRepository
         $event->setVisitTime($visitTime[0]);
         $event->setAutoGenerate(0);
         $event->setLinked(1);
+        $event->setDateKey($startDate->format('Y-m-d'));
         $this->_em->persist($event);
         $this->_em->flush();
         $this->_em->clear();
@@ -686,10 +735,8 @@ class EventRepository extends EntityRepository
      * @return array
      */
     public function getEventByTimeUser(User $user, $time) {
-
         $timeStart = new \DateTime($time.' 0:00:00');
         $timeEnd = new \DateTime($time.' 23:59:59');
-
 
         $events = $this->_em->getRepository('SolustatTimeSheetBundle:Event')
             ->createQueryBuilder('e')
@@ -964,5 +1011,14 @@ class EventRepository extends EntityRepository
         }
 
         return serialize($numberVisitSet);
+    }
+
+    /**
+     * @param $date
+     * @param $numberVisitSet
+     */
+    private function shiftDate($date, $numberVisitSet){
+        
+
     }
 }
