@@ -22,6 +22,24 @@ class EventRepository extends EntityRepository
     const TWO_TIME_PER_3_WEEK_DAY_2 = 3;
     const INTERVAL_TIME_PLANNING_WEEKS = 52;
 
+    const MAXIMUM_VISIT_PER_DAY = 1;
+    const WEEKEND_OFF_SHIFTING_VISIT = true;
+    const IA_AMPLITUDE_NEGATIVE = true;
+
+    const AMPLITUDE_MONTH = 5;
+    const AMPLITUDE_YEAR = 5;
+
+    const AMPLITUDE_WEEK_PER_DAY_1 = 4;
+    const AMPLITUDE_WEEK_PER_DAY_2 = 1;
+    const AMPLITUDE_WEEK_PER_DAY_3 = 1;
+    const AMPLITUDE_WEEK_PER_DAY_4 = 0;
+    const AMPLITUDE_WEEK_PER_DAY_5 = 0;
+
+    const AMPLITUDE_ONE_TIME_PER_2_WEEK_DAY = 2;
+    const AMPLITUDE_ONE_TIME_PER_3_WEEK_DAY = 3;
+    const AMPLITUDE_TWO_TIME_PER_3_WEEK_DAY = 2;
+
+
     protected $setFreqYear = [
         1 => [0],
         2 => [0, 26],
@@ -113,19 +131,12 @@ class EventRepository extends EntityRepository
         for ($i=0; $i < $arraySize; $i++) {
 
             /****************************************************************/
-
-
-
-
-
-            $dateShifted = $this->shiftDate($arrayEvents[$i], $numberVisitSet);
+            $test= $arrayEvents[$i];
+            $dateShifted = $this->shiftDate($arrayEvents[$i], $numberVisitSet, $patient->getFrequency());
 
             $numberVisitSet[$dateShifted][] = $patient->getId();
-            sort($numberVisitSet);
+            ksort($numberVisitSet);
             $arrayEvents[$i] = $dateShifted;
-
-
-
 
             /****************************************************************/
 
@@ -261,7 +272,6 @@ class EventRepository extends EntityRepository
             $numberVisitSet[$dateShifted][] = $patient->getId();
             sort($numberVisitSet);
             $arrayEvents[$i] = $dateShifted;
-
 
             /****************************************************************/
 
@@ -1016,9 +1026,158 @@ class EventRepository extends EntityRepository
     /**
      * @param $date
      * @param $numberVisitSet
+     * @param $frequency
+     * @return mixed
      */
-    private function shiftDate($date, $numberVisitSet){
-        
+    private function shiftDate($date, $numberVisitSet, $frequency)
+    {
+        if(!isset($numberVisitSet[$date])){
+            return $date;
+        } else {
 
+            if (count($numberVisitSet[$date]) < self::MAXIMUM_VISIT_PER_DAY){
+                return $date;
+            } else {
+                $time = $frequency->getTime();
+                $nbRepetition = $frequency->getNbRepetition();
+                $nbRepPerTime = $frequency->getNbRepPerTime();
+
+                if($time != "day") {
+                    if ($time == "week" && (int)$nbRepPerTime == 1) {
+                        switch ((int)$nbRepetition) {
+                            case 1:
+                                $dateUpdated = $this->findDay($numberVisitSet, $date, self::AMPLITUDE_WEEK_PER_DAY_1);
+                                break;
+                            case 2:
+                                $dateUpdated = $this->findDay($numberVisitSet, $date, self::AMPLITUDE_WEEK_PER_DAY_2);
+                                break;
+                            case 3:
+                                $dateUpdated = $this->findDay($numberVisitSet, $date, self::AMPLITUDE_WEEK_PER_DAY_3);
+                                break;
+                            case 4:
+                                $dateUpdated = $this->findDay($numberVisitSet, $date, self::AMPLITUDE_WEEK_PER_DAY_4);
+                                break;
+                            case 5:
+                                $dateUpdated = $this->findDay($numberVisitSet, $date, self::AMPLITUDE_WEEK_PER_DAY_5);
+                                break;
+                        }
+
+                        return $dateUpdated;
+                    }
+
+                    if ($time == "week" && (int)$nbRepPerTime == 2) {
+                        return  $this->findDay($numberVisitSet, $date, self::AMPLITUDE_ONE_TIME_PER_2_WEEK_DAY);
+                    }
+
+                    if ($time == "week" && (int)$nbRepPerTime == 3) {
+                        if((int)$nbRepetition ==1) {
+                            return  $this->findDay($numberVisitSet, $date, self::AMPLITUDE_ONE_TIME_PER_3_WEEK_DAY);
+
+                        } else {
+                            return  $this->findDay($numberVisitSet, $date, self::AMPLITUDE_TWO_TIME_PER_3_WEEK_DAY);
+                        }
+                    }
+
+                    if ($time == "month") {
+                        return $this->findDay($numberVisitSet, $date, self::AMPLITUDE_MONTH);
+                    }
+
+                    if ($time == "year") {
+                        return $this->findDay($numberVisitSet, $date, self::AMPLITUDE_YEAR);
+                    }
+                } else {
+                    return $date;
+                }
+            }
+        }
+    }
+
+    /**
+     * @param $numberVisitSet
+     * @param $date
+     * @param $amplitude
+     * @return string
+     */
+    public function findDay($numberVisitSet, $date, $amplitude){
+        $dateTimeOrigin = new \DateTime($date);
+        $i = 0;
+        $arrayNumberOfDays = [];
+        $we = 0;
+
+        do {
+            $dateTime = clone $dateTimeOrigin;
+            $string = '+'.($i+1+$we).' day';
+            $dateTime->modify($string);
+
+            if ($dateTime->format('d') == 'saturday' && self::WEEKEND_OFF_SHIFTING_VISIT){
+                $we = 2;
+            }
+
+            if(isset($numberVisitSet[$dateTime->format('Y-m-d')])){
+                $dateShifted = $numberVisitSet[$dateTime->format('Y-m-d')];
+            }
+
+            $arrayNumberOfDays[$i+1] = isset($dateShifted) ? count($dateShifted):0;
+            $i++;
+        } while ($i < $amplitude);
+
+        $we = 0;
+        $i = 0;
+
+        if(self::IA_AMPLITUDE_NEGATIVE){
+            do {
+                $dateTime = clone $dateTimeOrigin;
+                $string = '-'.($i+1+$we).' day';
+                $dateTime->modify($string);
+
+                if ($dateTime->format('d') == 'sunday' && self::WEEKEND_OFF_SHIFTING_VISIT){
+                    $we = 2;
+                }
+
+                if(isset($numberVisitSet[$dateTime->format('Y-m-d')])){
+                    $dateShifted = $numberVisitSet[$dateTime->format('Y-m-d')];
+                }
+
+                $arrayNumberOfDays[-($i+1)] = isset($dateShifted) ? count($dateShifted):0;
+                $i++;
+            } while ($i < $amplitude);
+        }
+
+        //on prends le premier des minimums du tableau pour que cela soit le plus proche
+        ksort($arrayNumberOfDays);
+        $min  = min(array_values($arrayNumberOfDays));
+        $keys = array_keys($arrayNumberOfDays, $min);
+        $smallest = [];
+
+        foreach ($keys as $key) {
+                $smallest[$key] = abs($key - 0);
+        }
+        asort($smallest);
+
+        $first = key($smallest);
+        next($smallest);
+        $second = key($smallest);
+
+        if(count($smallest) > 1 && !is_null($second)){
+            if(abs($first) == abs($second)){
+                $rand = [$first,$second];
+                shuffle($rand);
+                $minimumVisitInTheDayKey = $rand[0];
+            } else {
+                $minimumVisitInTheDayKey = $first;
+            }
+        } else {
+            $minimumVisitInTheDayKey = $first;
+        }
+
+        //Si le nombre minimum de visite des jours suivants sont egales alors on laisse le jour actuel
+        if ($arrayNumberOfDays[$minimumVisitInTheDayKey] == count($numberVisitSet[$dateTimeOrigin->format('Y-m-d')]))
+            return $dateTimeOrigin->format('Y-m-d');
+
+        if ($minimumVisitInTheDayKey < 0){
+            return $dateTimeOrigin->modify($minimumVisitInTheDayKey.' day')->format('Y-m-d');
+        } else {
+            return $dateTimeOrigin->modify('+'.$minimumVisitInTheDayKey.' day')->format('Y-m-d');
+        }
     }
 }
