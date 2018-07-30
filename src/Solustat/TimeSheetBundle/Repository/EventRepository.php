@@ -131,13 +131,11 @@ class EventRepository extends EntityRepository
         for ($i=0; $i < $arraySize; $i++) {
 
             /****************************************************************/
-            $test= $arrayEvents[$i];
             $dateShifted = $this->shiftDate($arrayEvents[$i], $numberVisitSet, $patient->getFrequency());
 
             $numberVisitSet[$dateShifted][] = $patient->getId();
             ksort($numberVisitSet);
             $arrayEvents[$i] = $dateShifted;
-
             /****************************************************************/
 
             $arrayFirst = [];
@@ -266,13 +264,11 @@ class EventRepository extends EntityRepository
         for ($i=0; $i < $arraySize; $i++) {
 
             /****************************************************************/
-
-            $dateShifted = $this->shiftDate($arrayEvents[$i], $numberVisitSet);
+            $dateShifted = $this->shiftDate($arrayEvents[$i], $numberVisitSet, $patient->getFrequency());
 
             $numberVisitSet[$dateShifted][] = $patient->getId();
-            sort($numberVisitSet);
+            ksort($numberVisitSet);
             $arrayEvents[$i] = $dateShifted;
-
             /****************************************************************/
 
             $arrayFirst = [];
@@ -1103,42 +1099,51 @@ class EventRepository extends EntityRepository
         $i = 0;
         $arrayNumberOfDays = [];
         $we = 0;
+        $arrayNumberOfDays[0] = count($numberVisitSet[$date]);
 
         do {
             $dateTime = clone $dateTimeOrigin;
-            $string = '+'.($i+1+$we).' day';
-            $dateTime->modify($string);
 
-            if ($dateTime->format('d') == 'saturday' && self::WEEKEND_OFF_SHIFTING_VISIT){
+            if ($dateTime->format('D') == 'Fri' && self::WEEKEND_OFF_SHIFTING_VISIT){
                 $we = 2;
             }
 
-            if(isset($numberVisitSet[$dateTime->format('Y-m-d')])){
+            $string = '+'.($i + 1 + $we).' day';
+            $result = $i + 1 + $we;
+            $dateTime->modify($string);
+
+            $test = $dateTime->format('D');
+
+            if (isset($numberVisitSet[$dateTime->format('Y-m-d')])){
                 $dateShifted = $numberVisitSet[$dateTime->format('Y-m-d')];
             }
 
-            $arrayNumberOfDays[$i+1] = isset($dateShifted) ? count($dateShifted):0;
+            $arrayNumberOfDays[$result] = isset($dateShifted) ? count($dateShifted):0;
             $i++;
         } while ($i < $amplitude);
 
         $we = 0;
         $i = 0;
 
-        if(self::IA_AMPLITUDE_NEGATIVE){
+        if (self::IA_AMPLITUDE_NEGATIVE){
             do {
                 $dateTime = clone $dateTimeOrigin;
-                $string = '-'.($i+1+$we).' day';
-                $dateTime->modify($string);
 
-                if ($dateTime->format('d') == 'sunday' && self::WEEKEND_OFF_SHIFTING_VISIT){
+                if ($dateTime->format('D') == 'Mon' && self::WEEKEND_OFF_SHIFTING_VISIT){
                     $we = 2;
                 }
+
+                $string = '-'.($i + 1 + $we).' day';
+                $result = $i + 1 + $we;
+                $dateTime->modify($string);
+
+                $test = $dateTime->format('D');
 
                 if(isset($numberVisitSet[$dateTime->format('Y-m-d')])){
                     $dateShifted = $numberVisitSet[$dateTime->format('Y-m-d')];
                 }
 
-                $arrayNumberOfDays[-($i+1)] = isset($dateShifted) ? count($dateShifted):0;
+                $arrayNumberOfDays[-$result] = isset($dateShifted) ? count($dateShifted):0;
                 $i++;
             } while ($i < $amplitude);
         }

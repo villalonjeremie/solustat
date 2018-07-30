@@ -25,7 +25,12 @@ class PatientType extends AbstractType
     {
         $builder
             ->add('folderNumber',   NumberType::class)
-            ->add('startingDate',   DateType::class)
+            ->add('startingDate',   DateType::class, [
+                    'years' => range(date('Y'), date('Y') + 5),
+                    'months' => range(1, 12),
+                    'days' => range(1, 31)
+                ]
+            )
             ->add('name',   TextType::class)
             ->add('surname',    TextType::class)
             ->add('address',    TextType::class)

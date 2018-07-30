@@ -6,11 +6,14 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Solustat\TimeSheetBundle\Entity\Event;
 use Doctrine\Common\Persistence\Event\LifecycleEventArgs;
+use Symfony\Component\Validator\Constraints as Assert;
+use Solustat\TimeSheetBundle\Validator\Constraints as TimeSheetBundleAssert;
 
 /**
  * @ORM\Table(name="solustat_patient")
  * @ORM\Entity(repositoryClass="Solustat\TimeSheetBundle\Repository\PatientRepository")
  * @ORM\HasLifecycleCallbacks()
+ * @TimeSheetBundleAssert\OldTime
  */
 class Patient
 {
@@ -28,6 +31,8 @@ class Patient
 
     /**
      * @ORM\Column(name="starting_date", type="datetime", nullable=true)
+     * @Assert\NotBlank
+     * @TimeSheetBundleAssert\OldTimeValidator
      */
     private $startingDate;
 
