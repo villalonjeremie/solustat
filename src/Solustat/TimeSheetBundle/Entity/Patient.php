@@ -13,7 +13,6 @@ use Solustat\TimeSheetBundle\Validator\Constraints as TimeSheetBundleAssert;
  * @ORM\Table(name="solustat_patient")
  * @ORM\Entity(repositoryClass="Solustat\TimeSheetBundle\Repository\PatientRepository")
  * @ORM\HasLifecycleCallbacks()
- * @TimeSheetBundleAssert\OldTime
  */
 class Patient
 {
@@ -31,8 +30,7 @@ class Patient
 
     /**
      * @ORM\Column(name="starting_date", type="datetime", nullable=true)
-     * @Assert\NotBlank
-     * @TimeSheetBundleAssert\OldTimeValidator
+     * @Assert\GreaterThan("today")
      */
     private $startingDate;
 
