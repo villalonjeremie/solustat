@@ -17,6 +17,8 @@ class PatientController extends Controller
 {
     public function listAction($page, Request $request)
     {
+        $userCurrent = $this->container->get('security.token_storage')->getToken()->getUser();
+
         if ($page < 1) {
             throw new NotFoundHttpException('Page "'.$page.'" inexistante.');
         }
@@ -26,7 +28,7 @@ class PatientController extends Controller
         $listPatients = $this->getDoctrine()
             ->getManager()
             ->getRepository('SolustatTimeSheetBundle:Patient')
-            ->getPatients($page, $nbPerPage);
+            ->getPatientsCollectionByUser($userCurrent, $page, $nbPerPage);
 
         $nbPages = ceil(count($listPatients) / $nbPerPage);
 
@@ -106,6 +108,17 @@ class PatientController extends Controller
                 $this->get('session')->set('flagFrequencyModified', 1);
             } else {
                 $this->get('session')->set('flagFrequencyModified', 0);
+            }
+        }
+
+        //flag frequency updated or not
+        if (isset($parameters['solustat_timesheetbundle_patient']['User'])){
+            $id = $parameters['solustat_timesheetbundle_patient']['User'];
+            $frequencyName = $em->getRepository('SolustatTimeSheetBundle:User')->find($id)->getUsername();
+            if($patient->getUser() != $frequencyName){
+                $this->get('session')->set('flagUserModified', 1);
+            } else {
+                $this->get('session')->set('flagUserModified', 0);
             }
         }
 

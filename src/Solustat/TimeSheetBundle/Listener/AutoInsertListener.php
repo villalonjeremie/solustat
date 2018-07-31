@@ -57,6 +57,18 @@ class AutoInsertListener
                 return;
             }
         }
+
+        if ($session->get('flagUserModified')) {
+            $queryToUpdate = $em->createQuery(
+                'UPDATE SolustatTimeSheetBundle:Event ev SET ev.user = '.$entities['user']->getId().' WHERE ev.patient = :evId'
+            )->setParameter("evId", $entities['patient']->getId());
+
+            $queryToUpdate->execute();
+
+            
+            //$em->getRepository('SolustatTimeSheetBundle:Event')->deleteVisitTimeBulk();
+
+        }
     }
 
     public function preRemove(LifecycleEventArgs $args)

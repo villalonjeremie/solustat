@@ -7,7 +7,6 @@ use Doctrine\ORM\Mapping as ORM;
 use Solustat\TimeSheetBundle\Entity\Event;
 use Doctrine\Common\Persistence\Event\LifecycleEventArgs;
 use Symfony\Component\Validator\Constraints as Assert;
-use Solustat\TimeSheetBundle\Validator\Constraints as TimeSheetBundleAssert;
 
 /**
  * @ORM\Table(name="solustat_patient")
