@@ -100,3 +100,7 @@ solustat_time_sheet_eventfree_link:
     defaults: { _controller: SolustatTimeSheetBundle:EventFree:link }
     requirements:
         id: \d+
+
+solustat_time_sheet_event_resync:
+    path:     /platform/resync
+    defaults: { _controller: SolustatTimeSheetBundle:Calendar:resync }

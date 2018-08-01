@@ -99,4 +99,19 @@ class CalendarController extends CalendarControllerBundle
 
         return $response;
     }
+
+    public function resyncAction(Request $request)
+    {
+        $userCurrent = $this->container->get('security.token_storage')->getToken()->getUser();
+        $em = $this->getDoctrine()->getManager();
+        $syncResult = $em->getRepository('SolustatTimeSheetBundle:Event')->resync($userCurrent);
+
+        if ($syncResult){
+            $request->getSession()->getFlashBag()->add('notice', "Syncronisation des évenements terminés");
+        } else {
+            $request->getSession()->getFlashBag()->add('error', "Erreur Syncronisation des évenements");
+        }
+
+        return $this->redirectToRoute('solustat_time_sheet_calendar');
+    }
 }

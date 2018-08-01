@@ -1189,4 +1189,12 @@ class EventRepository extends EntityRepository
             return $dateTimeOrigin->modify('+'.$minimumVisitInTheDayKey.' day')->format('Y-m-d');
         }
     }
+
+    /**
+     * @param User $user
+     * @return bool
+     */
+    public function resync(User $user){
+        return true;
+    }
 }

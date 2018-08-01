@@ -160,7 +160,6 @@ class PatientController extends Controller
         ));
     }
 
-
     public function menuAction($limit)
     {
 //        $em = $this->getDoctrine()->getManager();
