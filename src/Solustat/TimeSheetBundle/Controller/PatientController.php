@@ -114,11 +114,14 @@ class PatientController extends Controller
         //flag frequency updated or not
         if (isset($parameters['solustat_timesheetbundle_patient']['User'])){
             $id = $parameters['solustat_timesheetbundle_patient']['User'];
-            $frequencyName = $em->getRepository('SolustatTimeSheetBundle:User')->find($id)->getUsername();
-            if($patient->getUser() != $frequencyName){
-                $this->get('session')->set('flagUserModified', 1);
+            if($patient->getUser()->getId() != $id){
+                $this->get('session')->set('flagUserModified', true);
+                $this->get('session')->set('newUserId', (int)$id);
+                $this->get('session')->set('oldUserId', (int)$patient->getUser()->getId());
             } else {
-                $this->get('session')->set('flagUserModified', 0);
+                $this->get('session')->set('flagUserModified', false);
+                $this->get('session')->set('newUserId', null);
+                $this->get('session')->set('oldUserId', null);
             }
         }
 

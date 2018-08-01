@@ -243,10 +243,10 @@ class EventRepository extends EntityRepository
 
         /****************************************************************/
         $numberVisitSet = $user->getNumberVisitSet();
-        $numberVisitSet = $this->deleteVisitTimeBulk($numberVisitSet, $patient->getId());
+        $result = $this->deleteVisitTimeBulk($numberVisitSet, $patient->getId());
 
-        if ($numberVisitSet) {
-            $numberVisitSet = unserialize($numberVisitSet);
+        if ($result[0]) {
+            $numberVisitSet = unserialize($result[0]);
         } else {
             $numberVisitSet = [];
         }
@@ -841,7 +841,7 @@ class EventRepository extends EntityRepository
      * @param $patientId
      * @return array|mixed
      */
-    private function updateDateTimeSet($dateTimeSetSerialize, $arrayEvents, $timeStampVisit, $startTimeStamp, $patientId)
+    public function updateDateTimeSet($dateTimeSetSerialize, $arrayEvents, $timeStampVisit, $startTimeStamp, $patientId)
     {
         if ($dateTimeSetSerialize) {
             $dateTimeSet = unserialize($dateTimeSetSerialize);
@@ -904,7 +904,7 @@ class EventRepository extends EntityRepository
      * @param $patientId
      * @return array|mixed
      */
-    private function deleteDateTimeSetByPatientId($dateTimeSetSerialize, $patientId)
+    public function deleteDateTimeSetByPatientId($dateTimeSetSerialize, $patientId)
     {
         if ($dateTimeSetSerialize) {
             $dateTimeSet = unserialize($dateTimeSetSerialize);
@@ -931,7 +931,7 @@ class EventRepository extends EntityRepository
      * @param $event
      * @return array|mixed
      */
-    private function deleteDateTimeByPatientIdAndTime($dateTimeSetSerialize, $arrayEvents, $visitTimeStamp, $event)
+    public function deleteDateTimeByPatientIdAndTime($dateTimeSetSerialize, $arrayEvents, $visitTimeStamp, $event)
     {
         if ($dateTimeSetSerialize) {
             $dateTimeSet = unserialize($dateTimeSetSerialize);
@@ -957,7 +957,7 @@ class EventRepository extends EntityRepository
      * @param $patientId
      * @return string
      */
-    private function updateVisitTimeSet($numberVisitSetSerialize, $arrayEvents, $patientId)
+    public function updateVisitTimeSet($numberVisitSetSerialize, $arrayEvents, $patientId)
     {
         if ($numberVisitSetSerialize) {
             $numberVisitSet = unserialize($numberVisitSetSerialize);
@@ -975,9 +975,9 @@ class EventRepository extends EntityRepository
     /**
      * @param $numberVisitSetSerialize
      * @param $patientId
-     * @return bool|string
+     * @return array
      */
-    private function deleteVisitTimeBulk($numberVisitSetSerialize, $patientId)
+    public function deleteVisitTimeBulk($numberVisitSetSerialize, $patientId)
     {
         if ($numberVisitSetSerialize) {
             $numberVisitSet = unserialize($numberVisitSetSerialize);
@@ -985,16 +985,20 @@ class EventRepository extends EntityRepository
             return false;
         }
 
+        $arrayDateDelete = [];
+
         foreach ($numberVisitSet as $k=>$v) {
             if (($keys = array_keys($numberVisitSet[$k], $patientId)) !== false) {
                 foreach ($keys as $key){
                     unset($numberVisitSet[$k][$key]);
+                    $arrayDateDelete[] = $k;
                 }
+
                 sort($numberVisitSet[$k]);
             }
         }
 
-        return serialize($numberVisitSet);
+        return [serialize($numberVisitSet),$arrayDateDelete];
     }
 
     /**
@@ -1003,7 +1007,7 @@ class EventRepository extends EntityRepository
      * @param $patientId
      * @return bool|string
      */
-    private function deleteVisitTime($numberVisitSetSerialize, $date, $patientId)
+    public function deleteVisitTime($numberVisitSetSerialize, $date, $patientId)
     {
         if ($numberVisitSetSerialize) {
             $numberVisitSet = unserialize($numberVisitSetSerialize);
@@ -1025,7 +1029,7 @@ class EventRepository extends EntityRepository
      * @param $frequency
      * @return mixed
      */
-    private function shiftDate($date, $numberVisitSet, $frequency)
+    public function shiftDate($date, $numberVisitSet, $frequency)
     {
         if(!isset($numberVisitSet[$date])){
             return $date;

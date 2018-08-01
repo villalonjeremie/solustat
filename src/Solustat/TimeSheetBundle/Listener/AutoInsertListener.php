@@ -2,6 +2,7 @@
 
 namespace Solustat\TimeSheetBundle\Listener;
 
+use Doctrine\DBAL\Exception\DatabaseObjectNotFoundException;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Solustat\TimeSheetBundle\Entity\Patient;
 use Symfony\Component\Validator\Exception\NoSuchMetadataException;
@@ -63,11 +64,24 @@ class AutoInsertListener
                 'UPDATE SolustatTimeSheetBundle:Event ev SET ev.user = '.$entities['user']->getId().' WHERE ev.patient = :evId'
             )->setParameter("evId", $entities['patient']->getId());
 
-            $queryToUpdate->execute();
+            $resultQuery = $queryToUpdate->execute();
 
-            
-            //$em->getRepository('SolustatTimeSheetBundle:Event')->deleteVisitTimeBulk();
+            $oldUser = $em->getRepository('SolustatTimeSheetBundle:User')->find($session->get('oldUserId'));
+            $newUser = $em->getRepository('SolustatTimeSheetBundle:User')->find($session->get('newUserId'));
 
+            $oldNumberVisitSet = $oldUser->getNumberVisitSet();
+            $newNumberVisitSet = $newUser->getNumberVisitSet();
+
+            $result = $em->getRepository('SolustatTimeSheetBundle:Event')->deleteVisitTimeBulk($oldNumberVisitSet, $entities['patient']->getId());
+            $oldNumberVisitSetUpdated = $result[0];
+            $dateDeleted = $result[1];
+            $newNumberVisitSetUpdated = $em->getRepository('SolustatTimeSheetBundle:Event')->updateVisitTimeSet($newNumberVisitSet, $dateDeleted, $entities['patient']->getId());
+            $oldUser->setNumberVisitSet($oldNumberVisitSetUpdated);
+            $newUser->setNumberVisitSet($newNumberVisitSetUpdated);
+            $em->persist($oldUser);
+            $em->persist($newUser);
+            $em->flush();
+            $em->clear();
         }
     }
 
