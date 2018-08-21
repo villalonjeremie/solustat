@@ -28,7 +28,7 @@ class PatientController extends Controller
         $listPatients = $this->getDoctrine()
             ->getManager()
             ->getRepository('SolustatTimeSheetBundle:Patient')
-            ->getPatientsCollectionByUser($userCurrent, $page, $nbPerPage);
+            ->getPatientsCollectionByUserPaginator($userCurrent, $page, $nbPerPage);
 
         $nbPages = ceil(count($listPatients) / $nbPerPage);
 
@@ -76,7 +76,7 @@ class PatientController extends Controller
                 $request->getSession()->getFlashBag()->add('notice', 'Patient bien enregistré.');
                 return $this->redirectToRoute('solustat_time_sheet_patient_list', array('page' => 1));
             } catch (\Exception $e) {
-                $request->getSession()->getFlashBag()->add('error', 'Patient  222 deja enregistré.'.$e);
+                $request->getSession()->getFlashBag()->add('error', 'Patient deja enregistré.'.$e);
                 return $this->redirectToRoute('solustat_time_sheet_patient_list', array('page' => 1));
             }
         }

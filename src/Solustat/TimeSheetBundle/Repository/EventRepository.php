@@ -1116,8 +1116,6 @@ class EventRepository extends EntityRepository
             $result = $i + 1 + $we;
             $dateTime->modify($string);
 
-            $test = $dateTime->format('D');
-
             if (isset($numberVisitSet[$dateTime->format('Y-m-d')])){
                 $dateShifted = $numberVisitSet[$dateTime->format('Y-m-d')];
             }
@@ -1192,9 +1190,73 @@ class EventRepository extends EntityRepository
 
     /**
      * @param User $user
-     * @return bool
      */
-    public function resync(User $user){
-        return true;
+    public function resyncAllPatient(User $user){
+
+        $patients = $this->_em->getRepository('SolustatTimeSheetBundle:Patient')->getPatientsCollectionByUser($user);
+
+        $deleted = $this->deleteAllEventsFromUserId($user);
+
+
+
+//        foreach($patients as $patient){
+//            $this->resyncOnePatient($user,$patient);
+//        }
+
+//
+//        if (!($entities['patient'] instanceof Patient)) {
+//            return;
+//        }
+//
+//        $em = $args->getEntityManager();
+//        $entities = [];
+//
+//        if (!is_null($entities['patient']->getUpdatedAt())){
+//            return;
+//        }
+//
+//        $entities['visit_time'] = $entities['patient']->getVisitTime();
+//        $entities['user'] = $entities['patient']->getUser();
+//
+//        $this->_em->getRepository('SolustatTimeSheetBundle:Event')
+//            ->insertNewBulkEvents($entities['user'], $entities);
     }
+
+    /**
+     * @param User $user
+     * @param array $patient
+     */
+    public function resyncOnePatient(User $user, array $patient){
+
+//
+//        if (!($entities['patient'] instanceof Patient)) {
+//            return;
+//        }
+//
+//        $em = $args->getEntityManager();
+//        $entities = [];
+//
+//        if (!is_null($entities['patient']->getUpdatedAt())){
+//            return;
+//        }
+//
+//        $entities['visit_time'] = $entities['patient']->getVisitTime();
+//        $entities['user'] = $entities['patient']->getUser();
+//
+//        $this->_em->getRepository('SolustatTimeSheetBundle:Event')
+//            ->insertNewBulkEvents($entities['user'], $entities);
+    }
+
+
+    public function deleteAllEventsFromUserId(User $user) {
+        $result = $this->createQueryBuilder('e')
+            ->delete()
+            ->where('e.user = :user')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getResult();
+
+        return $result;
+    }
+
 }

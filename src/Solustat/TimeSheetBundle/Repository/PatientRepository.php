@@ -12,7 +12,7 @@ use Doctrine\ORM\Tools\Pagination\Paginator;
  */
 class PatientRepository extends \Doctrine\ORM\EntityRepository
 {
-    public function getPatientsCollectionByUser($user, $page, $nbPerPage)
+    public function getPatientsCollectionByUserPaginator($user, $page, $nbPerPage)
     {
         $query = $this->createQueryBuilder('p')
                 ->where('p.user = :user')
@@ -21,6 +21,17 @@ class PatientRepository extends \Doctrine\ORM\EntityRepository
         $query->setFirstResult(($page-1) * $nbPerPage)->setMaxResults($nbPerPage);
 
         return new Paginator($query, true);
+    }
+
+    public function getPatientsCollectionByUser($user)
+    {
+        $result = $this->createQueryBuilder('p')
+            ->where('p.user = :user')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getArrayResult();
+
+        return $result;
     }
 
     public function getPatientsByUser($user)

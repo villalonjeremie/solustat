@@ -12,13 +12,14 @@ class AutoInsertListener
 {
     public function postPersist(LifecycleEventArgs $args)
     {
-        $em = $args->getEntityManager();
-        $entities = [];
         $entities['patient'] = $args->getEntity();
 
         if (!($entities['patient'] instanceof Patient)) {
             return;
         }
+
+        $em = $args->getEntityManager();
+        $entities = [];
 
         if (!is_null($entities['patient']->getUpdatedAt())){
             return;
@@ -46,13 +47,9 @@ class AutoInsertListener
         $entities['user'] = $entities['patient']->getUser();
 
         if ($session->get('flagFrequencyModified')) {
-            $queryToDelete = $em->createQuery(
-                'DELETE FROM SolustatTimeSheetBundle:Event ev WHERE ev.patient = :evId'
-            )->setParameter("evId", $entities['patient']->getId());
+            $result = $em->getRepository('SolustatTimeSheetBundle:Event')->deleteEventsFromUserId($entities['patient']->getId());
 
-            $resultQuery = $queryToDelete->execute();
-
-            if ($resultQuery){
+            if ($result){
                 $em->getRepository('SolustatTimeSheetBundle:Event')->insertUpdateBulkEvents($entities['user'], $entities);
             } else {
                 return;

@@ -104,7 +104,7 @@ class CalendarController extends CalendarControllerBundle
     {
         $userCurrent = $this->container->get('security.token_storage')->getToken()->getUser();
         $em = $this->getDoctrine()->getManager();
-        $syncResult = $em->getRepository('SolustatTimeSheetBundle:Event')->resync($userCurrent);
+        $syncResult = $em->getRepository('SolustatTimeSheetBundle:Event')->resyncAllPatient($userCurrent);
 
         if ($syncResult){
             $request->getSession()->getFlashBag()->add('notice', "Syncronisation des évenements terminés");
