@@ -1,0 +1,25 @@
+{% extends "SolustatTimeSheetBundle::layout.html.twig" %}
+
+{% block title %}
+  Supprimer un patient - {{ parent() }}
+{% endblock %}
+
+{% block solustattimesheet_body %}
+
+  <h2>Supprimer un patient</h2>
+
+  <p>
+    Etes-vous certain de vouloir supprimer ce patient "{{ patient.name }} {{ patient.surname}}" ?
+  </p>
+
+  <form action="{{ path('solustat_time_sheet_patient_delete', {'id': patient.id}) }}" method="post">
+    <a href="{{ path('solustat_time_sheet_patient_view', {'id': patient.id}) }}" class="btn btn-default">
+      <i class="glyphicon glyphicon-chevron-left"></i>
+      Retour à la fiche
+    </a>
+    <input type="submit" value="Supprimer" class="btn btn-danger" />
+    {# Ceci va générer le champ CSRF #}
+    {{ form_rest(form) }}
+  </form>
+
+{% endblock %}

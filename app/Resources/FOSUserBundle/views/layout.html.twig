@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+    <div class="container theme-showcase" role="main">
+        <div class="jumbotron">
+           {% block name %}
+           {% endblock name %}
+
+           {% block fos_user_content %}
+           {% endblock fos_user_content %}
+       </div>
+    </div>
+{% endblock body %}

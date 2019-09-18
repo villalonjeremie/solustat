@@ -1,0 +1,42 @@
+{% extends "SolustatTimeSheetBundle::layout.html.twig" %}
+
+{% block title %}
+    Liste des patients - {{ parent() }}
+{% endblock %}
+{% block solustattimesheet_body %}
+    <h2>Liste des patients</h2>
+    <a href="{{ path('solustat_time_sheet_patient_add') }}">Ajouter un patient</a>
+    {% if app.session.flashBag.has('notice') %}
+        <div class="alert alert-success">
+            {% for msg in app.session.flashBag.get('notice') %}
+                {{ msg }}
+            {% endfor %}
+        </div>
+    {% endif %}
+    <ul>
+        {% for patient in listPatients %}
+            <li>
+                <a href="{{ path('solustat_time_sheet_patient_view', {'id': patient.id}) }}">
+                    {{ patient.name }}
+                </a>
+                <a href="{{ path('solustat_time_sheet_patient_edit', {'id': patient.id}) }}">
+                   / modifier
+                </a>
+                <a href="{{ path('solustat_time_sheet_patient_delete', {'id': patient.id}) }}">
+                   / supprimer
+                </a>
+                créé le {{ patient.createdAt|date('d/m/Y') }}
+            </li>
+        {% else %}
+            <li>Pas (encore !) de patient</li>
+        {% endfor %}
+    </ul>
+
+    <ul class="pagination">
+        {% for p in range(1, nbPages) %}
+            <li{% if p == page %} class="active"{% endif %}>
+                <a href="{{ path('solustat_time_sheet_patient_list', {'page': p}) }}">{{ p }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}

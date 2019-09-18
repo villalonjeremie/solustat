@@ -1,10 +1,20 @@
 solustat_time_sheet_homepage:
-    path:     /platform
+    path:     /
     defaults: { _controller: SolustatTimeSheetBundle:Default:index }
 
+solustat_time_sheet_list_alert:
+    path:     /
+    defaults: { _controller: SolustatTimeSheetBundle:EventFree:listAlert }
+
+solustat_time_sheet_calendar:
+    path:     /calendar
+    defaults: { _controller: SolustatTimeSheetBundle:Calendar:view }
+
 solustat_time_sheet_patient_list:
-    path:      /platform/patient/list
+    path:      /platform/patient/list/{page}
     defaults: { _controller: SolustatTimeSheetBundle:Patient:list }
+    requirements:
+        page: \d+
 
 solustat_time_sheet_patient_view:
     path:      /platform/patient/{id}
@@ -28,9 +38,15 @@ solustat_time_sheet_patient_delete:
     requirements:
         id: \d+
 
+solustat_time_sheet_nurse_myaccount:
+    path:     /platform/account
+    defaults: { _controller: SolustatTimeSheetBundle:Nurse:myaccount }
+
 solustat_time_sheet_nurse_list:
-    path:      /platform/nurse/list
+    path:      /platform/nurse/list/{page}
     defaults: { _controller: SolustatTimeSheetBundle:Nurse:list }
+    requirements:
+        page: \d+
 
 solustat_time_sheet_nurse_view:
     path:      /platform/nurse/{id}
@@ -54,10 +70,6 @@ solustat_time_sheet_nurse_delete:
     requirements:
         id: \d+
 
-solustat_time_sheet_bucket_list:
-    path:      /platform/bucket/list
-    defaults: { _controller: SolustatTimeSheetBundle:Bucket:list }
-
 solustat_time_sheet_nurse_day:
     path:      /platform/nurse/week
     defaults: { _controller: SolustatTimeSheetBundle:Nurse:day }
@@ -73,3 +85,22 @@ solustat_time_sheet_nurse_month:
 solustat_time_sheet_nurse_year:
     path:      /platform/nurse/year
     defaults: { _controller: SolustatTimeSheetBundle:Nurse:year }
+
+solustat_full_calendar_load:
+    path:     /full-calendar/load
+    defaults:
+        _controller: SolustatTimeSheetBundle:Calendar:load
+
+solustat_time_sheet_eventfree_list:
+    path:      /platform/event/list/{page}
+    defaults: { _controller: SolustatTimeSheetBundle:EventFree:list }
+
+solustat_time_sheet_eventfree_link:
+    path:      /platform/event/link/{id}
+    defaults: { _controller: SolustatTimeSheetBundle:EventFree:link }
+    requirements:
+        id: \d+
+
+solustat_time_sheet_event_resync:
+    path:     /platform/resync
+    defaults: { _controller: SolustatTimeSheetBundle:Calendar:resync }

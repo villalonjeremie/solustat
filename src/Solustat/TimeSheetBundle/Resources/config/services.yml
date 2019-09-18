@@ -1,4 +1,12 @@
 services:
-#    solustat_time_sheet.example:
-#        class: Solustat\TimeSheetBundle\Example
-#        arguments: ["@service_id", "plain_value", "%parameter%"]
+    solustat_time_sheet_calendar.autoinsertevent:
+        class: Solustat\TimeSheetBundle\Service\AutoInsertEvents
+        arguments:
+            - "@doctrine.orm.entity_manager"
+            - "@service_container"
+
+    solustat_time_sheet_calendar.calendar:
+        class: Solustat\TimeSheetBundle\Service\Calendar
+        arguments:
+            - "@anca_rebeca_full_calendar.service.serializer"
+            - "@event_dispatcher"

@@ -13,3 +13,28 @@ services:
         # this means you cannot fetch services directly from the container via $container->get()
         # if you need to do this, you can override this setting on individual services
         public: false
+
+    Solustat\TimeSheetBundle\DataFixtures\:
+         resource: '../../src/Solustat/TimeSheetBundle/DataFixtures/'
+
+    app.form.registration:
+        class: Solustat\TimeSheetBundle\Form\RegistrationFormType
+        tags:
+              - { name: form.type }
+
+    app.form.profile:
+        class: Solustat\TimeSheetBundle\Form\ProfileFormType
+        tags:
+              - { name: form.type }
+
+    app_bundle.service.listener:
+        class: Solustat\TimeSheetBundle\Listener\LoadDataListener
+        tags:
+              - { name: 'kernel.event_listener', event: 'solustat.fullcalendar.set_data', method: loadData }
+
+    my.listener:
+        class: Solustat\TimeSheetBundle\Listener\AutoInsertListener
+        tags:
+            - { name: doctrine.event_listener, event: postPersist }
+            - { name: doctrine.event_listener, event: postUpdate }
+            - { name: doctrine.event_listener, event: preRemove }

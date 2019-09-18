@@ -1,0 +1,11 @@
+{% extends "SolustatTimeSheetBundle::layout.html.twig" %}
+
+{% block title %}
+    Calendar - {{ parent() }}
+{% endblock %}
+
+{% block solustattimesheet_body %}
+    {% set patients = patients %}
+    {% set visitstime = visitstime %}
+    {% include "SolustatTimeSheetBundle:Calendar:calendar.html.twig" with {patients : patients, visitstime : visitstime} %}
+{% endblock %}

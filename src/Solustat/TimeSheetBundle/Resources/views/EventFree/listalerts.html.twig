@@ -1,0 +1,11 @@
+{% block solustattimesheet_body_list_alerts %}
+    <ul>
+        {% for alert in listAlerts %}
+            <li>
+                <p>{{ alert.title }}</p>
+            </li>
+        {% else %}
+            <li>Tout vas bien</li>
+        {% endfor %}
+    </ul>
+{% endblock %}

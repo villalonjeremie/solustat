@@ -1,0 +1,13 @@
+{% trans_default_domain 'FOSUserBundle' %}
+
+<div class="fos_user_user_show">
+    <p>{{ 'profile.show.name'|trans }}: {{ user.name }}</p>
+    <p>{{ 'profile.show.surname'|trans }}: {{ user.surname }}</p>
+    <p>{{ 'profile.show.email'|trans }}: {{ user.email }}</p>
+    <p>{{ 'profile.show.registration_nb'|trans }}: {{ user.registrationNb }}</p>
+    <p>{{ 'profile.show.tel_work'|trans }}: {{ user.telWork }}</p>
+    <p>{{ 'profile.show.tel_mobile'|trans }}: {{ user.telMobile }}</p>
+    <p>{{ 'profile.show.name'|trans }}: {{ user.sector.name }}</p>
+    <p>{{ 'profile.show.name'|trans }}: {{ user.position.position }}</p>
+    <a href="{{ path('solustat_time_sheet_homepage') }}">Back to Home</a>
+</div>

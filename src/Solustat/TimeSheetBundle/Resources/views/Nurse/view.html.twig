@@ -1,0 +1,40 @@
+{% extends "SolustatTimeSheetBundle::layout.html.twig" %}
+
+{% block title %}
+  Dossier employé(e) - {{ parent() }}
+{% endblock %}
+
+{% block solustattimesheet_body %}
+  <div style="float: left; margin-right: 1em;">
+  <h2>{{ nurse.name }} {{ nurse.surname }}</h2>
+  <i>Crée le {{ nurse.createdAt.date }}</i>
+  <div class="well">
+    Address : {{ nurse.post }}
+  </div>
+    <div class="well">
+    Code Postal : {{ nurse.registrationNb }}
+  </div>
+  <div class="well">
+    Ville : {{ nurse.securityLevel }}
+  </div>
+  <div class="well">
+    Tél : {{ nurse.telWork }}
+  </div>
+  <div class="well">
+    Secteur : {{ nurse.telMobile }}
+  </div>
+  <p>
+    <a href="{{ path('solustat_time_sheet_nurse_list', {'page': 1}) }}" class="btn btn-default">
+      <i class="glyphicon glyphicon-chevron-left"></i>
+      Retour à la liste
+    </a>
+    <a href="{{ path('solustat_time_sheet_nurse_edit', {'id': nurse.id}) }}" class="btn btn-default">
+      <i class="glyphicon glyphicon-edit"></i>
+      Modifier l'employé(e)
+    </a>
+    <a href="{{ path('solustat_time_sheet_nurse_delete', {'id': nurse.id}) }}" class="btn btn-danger">
+      <i class="glyphicon glyphicon-trash"></i>
+      Supprimer l'employé(e)
+    </a>
+  </p>
+{% endblock %}
