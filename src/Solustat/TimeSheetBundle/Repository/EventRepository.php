@@ -1197,13 +1197,11 @@ class EventRepository extends EntityRepository
 
         $deleted = $this->deleteAllEventsFromUserId($user);
 
+        foreach($patients as $patient){
+            $this->resyncOnePatient($user,$patient);
+        }
 
 
-//        foreach($patients as $patient){
-//            $this->resyncOnePatient($user,$patient);
-//        }
-
-//
 //        if (!($entities['patient'] instanceof Patient)) {
 //            return;
 //        }
